@@ -23,7 +23,7 @@ public class SleepLogsController(SleepTrackerContext context) : Controller
             return TypedResults.Problem("Entity set 'Users'  is null.");
 
         var query = from m in DBContext.SleepLogs 
-            where m.User!.Id == 1 //filter by user
+            where m.User!.Id == "1" //filter by user
             select m ;  
         
         if( DateTime.TryParse( date, out DateTime dateResult))

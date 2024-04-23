@@ -21,12 +21,12 @@ public class UsersController(SleepTrackerContext context) : Controller
     [HttpGet]
     public async Task<IResult> GetAllUsers()
     {
-        if (DBContext.UsersLocal == null)
+        if (DBContext.Users == null)
             return TypedResults.Problem("Entity set 'Users'  is null.");
 
-        var query = from m in DBContext.UsersLocal select m ;  //filter by name
+        var query = from m in DBContext.Users select m ;  //filter by name
 
-        return TypedResults.Ok(await query.Select( p => new UserDto (p))
+        return TypedResults.Ok(await query.Select( p => p)
             .ToListAsync());
     }
 }

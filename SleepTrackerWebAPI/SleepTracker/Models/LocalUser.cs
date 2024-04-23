@@ -1,10 +1,9 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace SleepTracker.Models;
 
-public class LocalUser
+public class LocalUser : IdentityUser
 {
-    public int? Id {get; set;}
     public string? Name { get; set; }
-    public List<SleepLog>? SleepLogs { get; set; }
 }

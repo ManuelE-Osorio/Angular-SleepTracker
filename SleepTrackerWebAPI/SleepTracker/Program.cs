@@ -34,7 +34,7 @@ public class SleepTracker
         builder.Services.AddAuthorization();
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+        builder.Services.AddIdentityApiEndpoints<LocalUser>()
             .AddEntityFrameworkStores<SleepTrackerContext>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -67,7 +67,8 @@ public class SleepTracker
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
                 var sp = app.Services.CreateScope().ServiceProvider;
-                SeedData.SeedSleepLogs(context, sp);
+                SeedData.SeedUser(context, sp).GetAwaiter().GetResult();
+                SeedData.SeedLogs(context);
             }
 
         if (app.Environment.IsDevelopment())
@@ -79,7 +80,7 @@ public class SleepTracker
         app.UseHttpsRedirection();
         app.UseCors("AllowAnyOrigin");
         app.MapControllers();
-        app.MapIdentityApi<IdentityUser>();
+        app.MapIdentityApi<LocalUser>();
         app.MapSwagger();
         app.Run();
     }
