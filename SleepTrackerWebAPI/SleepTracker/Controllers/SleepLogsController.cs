@@ -6,15 +6,19 @@ using System.Linq;
 using System.Data;
 using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace SleepTracker.Controllers;
 
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/sleeplogs")]
-public class SleepLogsController(SleepTrackerContext context) : Controller
+[Authorize]
+public class SleepLogsController(SleepTrackerContext context, UserManager<LocalUser> userManager) : Controller
 {
     private readonly SleepTrackerContext DBContext = context;
+    private readonly UserManager<LocalUser> UserManager = userManager;
     
     [HttpGet]
     public async Task<IResult> GetAllLogs(string? date)
@@ -22,8 +26,10 @@ public class SleepLogsController(SleepTrackerContext context) : Controller
         if (DBContext.Users == null)
             return TypedResults.Problem("Entity set 'Users'  is null.");
 
+        var user = UserManager.GetUserId(User);
+
         var query = from m in DBContext.SleepLogs 
-            where m.User!.Id == "1" //filter by user
+            where m.User!.Id == user //filter by user
             select m ;  
         
         if( DateTime.TryParse( date, out DateTime dateResult))

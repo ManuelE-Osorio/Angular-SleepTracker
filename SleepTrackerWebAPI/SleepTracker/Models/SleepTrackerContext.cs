@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SleepTracker.Models;
 
-public class SleepTrackerContext(DbContextOptions<SleepTrackerContext> options) : IdentityDbContext<LocalUser>(options)
+public class SleepTrackerContext(DbContextOptions<SleepTrackerContext> options) : IdentityDbContext<LocalUser, IdentityRole, string>(options)
 {
     public DbSet<SleepLog> SleepLogs { get; set; }
 

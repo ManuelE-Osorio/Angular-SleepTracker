@@ -13,7 +13,7 @@ namespace SleepTracker.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/users")]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class UsersController(SleepTrackerContext context) : Controller
 {
     private readonly SleepTrackerContext DBContext = context;
@@ -26,7 +26,7 @@ public class UsersController(SleepTrackerContext context) : Controller
 
         var query = from m in DBContext.Users select m ;  //filter by name
 
-        return TypedResults.Ok(await query.Select( p => p)
+        return TypedResults.Ok(await query.Select( p => new LocalUserDto(p) )
             .ToListAsync());
     }
 }
