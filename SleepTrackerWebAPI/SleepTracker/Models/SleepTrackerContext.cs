@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SleepTracker.Models;
 
-public class SleepTrackerContext(DbContextOptions<SleepTrackerContext> options) : IdentityDbContext<LocalUser, IdentityRole, string>(options)
+public class SleepTrackerContext(DbContextOptions<SleepTrackerContext> options) : IdentityDbContext<IdentityUser, IdentityRole, string>(options)
 {
     public DbSet<SleepLog> SleepLogs { get; set; }
 
@@ -13,7 +13,8 @@ public class SleepTrackerContext(DbContextOptions<SleepTrackerContext> options) 
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<SleepLog>( p => {
             p.HasOne(p => p.User)
-                .WithMany();
+                .WithMany()
+                .IsRequired();
         });
 
         modelBuilder.Entity<SleepLog>( p => {
@@ -21,6 +22,8 @@ public class SleepTrackerContext(DbContextOptions<SleepTrackerContext> options) 
                 .IsRequired();
             p.Property( p => p.EndDate)
                 .IsRequired();
+            p.Property( p => p.Comments)
+                .HasMaxLength(500);
         });
     }
 }

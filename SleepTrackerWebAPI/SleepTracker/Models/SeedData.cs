@@ -12,27 +12,28 @@ namespace CoffeeTracker.Models;
 
 public class SeedData
 {
-    public static async Task<bool> SeedUser( SleepTrackerContext context, IServiceProvider sp)
+    public static async Task<bool> SeedUser( IServiceProvider serviceProvider)
     {
+        var context = serviceProvider.GetRequiredService<SleepTrackerContext>();
         if(context.Users.Any())
             return false;
 
-        var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         await roleManager.CreateAsync(new IdentityRole("Admin"));
         await roleManager.CreateAsync(new IdentityRole("User"));
 
-        var userManager = sp.GetRequiredService<UserManager<LocalUser>>();
-        var userStore = sp.GetRequiredService<IUserStore<LocalUser>>();
-        var emailStore = (IUserEmailStore<LocalUser>)userStore;
+        var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var userStore = serviceProvider.GetRequiredService<IUserStore<IdentityUser>>();
+        var emailStore = (IUserEmailStore<IdentityUser>)userStore;
         var email = "admin@thecsharpacademy.com";
-        var user = new LocalUser();
+        var user = new IdentityUser();
         await userStore.SetUserNameAsync(user, email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, email, CancellationToken.None);
         await userManager.CreateAsync(user, "Admin1234");
         await userManager.AddToRoleAsync(user, "Admin");
 
-        user = new LocalUser();        
-         email = "user@thecsharpacademy.com";
+        user = new IdentityUser();        
+        email = "user@thecsharpacademy.com";
         await userStore.SetUserNameAsync(user, email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, email, CancellationToken.None);
         await userManager.CreateAsync(user, "User1234");
@@ -42,11 +43,11 @@ public class SeedData
         return true;
     }
 
-    public static async void SeedLogs(IServiceProvider sp)
+    public static async void SeedLogs(IServiceProvider serviceProvider)
     {
-        var userManager = sp.GetRequiredService<UserManager<LocalUser>>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
         var user = await userManager.FindByEmailAsync("admin@thecsharpacademy.com");
-        var context = sp.GetRequiredService<SleepTrackerContext>();
+        var context = serviceProvider.GetRequiredService<SleepTrackerContext>();
 
         context.SleepLogs.AddRange([
             new SleepLog { 
