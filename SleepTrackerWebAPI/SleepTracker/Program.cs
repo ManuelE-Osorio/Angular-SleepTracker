@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SleepTracker;
 
@@ -79,6 +80,17 @@ public class SleepTracker
         }
 
         app.UseHttpsRedirection();
+        app.MapPost("/logout", 
+            async ( SignInManager<IdentityUser> signInManager, [FromBody]object empty) =>
+        {
+            if (empty is not null)
+            {
+                await signInManager.SignOutAsync();
+                return Results.Ok();
+            }
+            return Results.NotFound();
+        }).RequireAuthorization();
+
         app.UseCors("AllowAnyOrigin");
         app.MapControllers();
         app.MapIdentityApi<IdentityUser>();

@@ -37,7 +37,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         query = query.OrderByDescending( p => p.StartDate);
         
         if( DateTime.TryParse( date, out DateTime dateResult))
-            query = query.Where( p => p.StartDate == dateResult);
+            query = query.Where( p => p.StartDate!.Value.Date == dateResult.Date);
 
         query = query.Skip(startIndex ?? 0).Take(pageSize ?? 5);
 
@@ -59,7 +59,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         query = query.OrderByDescending( p => p.StartDate);
         
         if( DateTime.TryParse( date, out DateTime dateResult))
-            query = query.Where( p => p.StartDate!.Value.Date == dateResult.Date);  //check only date, not time
+            query = query.Where( p => p.StartDate!.Value.Date == dateResult.Date);
 
         query = query.Skip(startIndex ?? 0).Take(pageSize ?? 5);
 
@@ -72,14 +72,18 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         if (_context.Users == null)
             return TypedResults.Problem("Entity set 'Users'  is null.");
 
-        var user = await _userManager.GetUserAsync(User);        
-        var log = await _context.SleepLogs.Where( p => p.User == user && p.Id == id).FirstOrDefaultAsync();
-        
+        SleepLog? log;
+
+        if( User.IsInRole("Admin"))
+            log = await _context.SleepLogs.Where( p => p.Id == id).FirstOrDefaultAsync();
+        else
+        {
+            var user = await _userManager.GetUserAsync(User);        
+            log = await _context.SleepLogs.Where( p => p.User == user && p.Id == id).FirstOrDefaultAsync(); 
+        }
+
         if( log is null)
             return TypedResults.NotFound();
-
-        // if( log.User!.Id != user)
-        //     return TypedResults.Unauthorized();
 
         return TypedResults.Ok( new SleepLogDto(log));
     }
@@ -115,17 +119,18 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
     [Consumes("application/json")]
     public async Task<IResult> UpdateLog( int id, [FromBody] SleepLog log )
     {
-        if(!ModelState.IsValid || id != log.Id)  //bad user
+        if(!ModelState.IsValid || id != log.Id)
             return TypedResults.BadRequest();
 
-        var previousLog = _context.SleepLogs.Find( id);
+        var userLog = _context.SleepLogs.Include( p => p.User)
+            .Where( p => p.Id == id).Select(p => p.User!.Id).FirstOrDefault();
 
-        if( previousLog is null)
+        if( userLog is null)
             return TypedResults.NotFound();
 
         var user = _userManager.GetUserId(User);
 
-        if( user == previousLog.User!.Id || User.IsInRole("Admin"))
+        if( user == userLog || User.IsInRole("Admin"))
         {    
             _context.SleepLogs.Update(log);
             try
@@ -151,14 +156,15 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         if( log is null)
             return TypedResults.NotFound();
 
-        var previousLog = _context.SleepLogs.Find( id);
+        var userLog = _context.SleepLogs.Include( p => p.User)
+            .Where( p => p.Id == id).Select(p => p.User!.Id).FirstOrDefault();
 
-        if( previousLog is null)
+        if( userLog is null)
             return TypedResults.NotFound();
 
         var user = _userManager.GetUserId(User);
 
-        if( user == previousLog.User!.Id || User.IsInRole("Admin"))
+        if( user == userLog || User.IsInRole("Admin"))
         {
             _context.SleepLogs.Remove(log);
             try
