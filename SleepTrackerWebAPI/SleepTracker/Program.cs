@@ -89,7 +89,7 @@ public class SleepTracker
                 return Results.Ok();
             }
             return Results.NotFound();
-        }).RequireAuthorization();
+        }).RequireCors("AllowAnyOrigin").RequireAuthorization();
 
         app.UseCors("AllowAnyOrigin");
         app.MapControllers();
