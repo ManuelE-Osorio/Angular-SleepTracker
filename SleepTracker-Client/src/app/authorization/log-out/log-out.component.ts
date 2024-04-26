@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { AuthenticationService } from "../authentication.service";
-import { Account, AccountForm } from '../account';
+import { AuthenticationService } from "../../services/authentication.service";
+import { Account, AccountForm } from '../../models/account';
 
 @Component({
   selector: 'app-log-out',

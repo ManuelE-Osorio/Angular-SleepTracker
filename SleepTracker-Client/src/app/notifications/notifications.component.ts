@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { NotificationsService } from '../notifications.service';
+import { NotificationsService } from '../services/notifications.service';
 
 @Component({
   selector: 'app-notifications',

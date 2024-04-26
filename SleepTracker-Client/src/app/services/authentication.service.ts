@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Account } from "./account";
+import { Account } from "../models/account";
 import { BehaviorSubject, Observable, Subject, asyncScheduler, catchError, map, of, scheduled, tap } from "rxjs";
 import { NotificationsService } from "./notifications.service";
 
@@ -20,53 +20,36 @@ export class AuthenticationService {
     return this._authStateChanged.asObservable();
   }
 
-  // private baseUrl = 'https://localhost:7028/'
-  private baseUrl = '/'
-
-  // cookie-based login
-  public logIn(account: Account) {
-    console.log(account)
-    return this.http.post<HttpResponse<any>>(`${this.baseUrl}login?useCookies=true`, account, {
+  public logIn(account: Account) : Observable<any> {
+    return this.http.post<any>(`/login?useCookies=true`, account, {
       observe: 'response'
     }).pipe(
       tap( {next: () => this.log(`Logged in succesfully`, `success`)}),
-      catchError( this.logError<HttpResponse<any>>(false)),
+      catchError( this.logError<any>(false)),
       map( (res) => {
         if(res.status == 200){
           this._authStateChanged.next(true)
         }
         return res
     }));
-      // map((res: HttpResponse<string>) => {
-      //   this._authStateChanged.next(res.ok);
-      //   return res.ok;
-      // })
   }
 
-
-    // sign out
-  public logOut() {
-    return this.http.post<HttpResponse<any>>(`${this.baseUrl}logout`, {}, {
+  public logOut() : Observable<any> {
+    return this.http.post<any>(`/logout`, {}, {
       withCredentials: true,
       observe: 'response',
       responseType: 'json'
     }).pipe(
       tap( {next: () => this.log(`Logged out succesfully`, `success`)}),
-      catchError( this.logError<HttpResponse<any>>(true)),
+      catchError( this.logError<any>(true)),
       map( (res) => {
         if( res.status == 200){
           this._authStateChanged.next(false);
         }
         return res;
       })
-      // map((res: HttpResponse<string>) => {
-      // if (res.ok) {
-      //   this._authStateChanged.next(false);
-      // }
-      // return res.ok;})
-      );    
+    );    
   }
-
 
   // register new user
   // public register(email: string, password: string) {
@@ -82,27 +65,31 @@ export class AuthenticationService {
   //     }));
   // }
 
-  // check if the user is authenticated. the endpoint is protected so 401 if not.
-  // public user() {
-  //   return this.http.get<Account>('/manage/info', {
-  //     withCredentials: true
-  //   }).pipe(
-  //     catchError((_: HttpErrorResponse, __: Observable<Account>) => {
-  //       return of({} as Account);
-  //     }));
-  // }
+  public isSignedIn() : Observable<boolean> {
+    return this.http.get<Account | null >('/manage/info', {
+      withCredentials: true,
+      responseType: 'json'
+    }).pipe(
+      tap( {next: () => this.log(`User is logged in`, `success`)}),
+      catchError( () => scheduled([null], asyncScheduler) ),
+      map((resp) => {
+        if( resp!= null && resp.email.length > 0 ){
+            return true;
+          }
+        return false;
+      })
+    );
+  }
 
-  // is signed in when the call completes without error and the user has an email
-  // public isSignedIn(): Observable<boolean> {
-  //   return this.user().pipe(
-  //     map((userInfo) => {
-  //       const valid = !!(userInfo && userInfo.userName && userInfo.userName.length > 0);
-  //       return valid;
-  //     }),
-  //     catchError((_) => {
-  //       return of(false);
-  //     }));
-  // }
+  public isAdmin() : Observable<boolean> {
+    return this.http.get<boolean>('/role', {
+      withCredentials: true,
+      responseType: 'json'
+    }).pipe(
+      tap( {next: () => this.log(`Admin Request`, `success`)}),
+      catchError( () => scheduled([false], asyncScheduler)),      
+    )
+  }
 
   private log(message: string, type: string) {
     this.notificationService.add( message, type);

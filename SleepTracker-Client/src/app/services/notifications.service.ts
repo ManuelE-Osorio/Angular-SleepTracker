@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, timer } from 'rxjs';
-import { NotificationMessage } from './sleep-logs';
+import { NotificationMessage } from '../models/sleep-logs';
 
 @Injectable({
   providedIn: 'root'

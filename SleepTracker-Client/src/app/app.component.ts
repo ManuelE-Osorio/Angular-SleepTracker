@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { LogInComponent } from './log-in/log-in.component';
+import { RouterLink, RouterLinkActive, RouterOutlet, provideRouter } from '@angular/router';
+import { LogInComponent } from './authorization/log-in/log-in.component';
 import { NotificationsComponent } from './notifications/notifications.component';
-import { LogOutComponent } from './log-out/log-out.component';
+import { LogOutComponent } from './authorization/log-out/log-out.component';
+import { routes } from './app.routes';
+import { AdminComponent } from './admin/admin/admin.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LogInComponent, NotificationsComponent, LogOutComponent],
+  imports: [RouterOutlet, RouterLink, LogInComponent, NotificationsComponent, LogOutComponent, RouterLinkActive, AdminComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
+
 export class AppComponent {
-  title = 'SleepTracker-Client';
+  title = "SleepTracker-Client"
+  constructor() {}
+
 }

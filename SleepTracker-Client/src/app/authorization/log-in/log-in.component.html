@@ -1,4 +1,4 @@
-<div *ngIf="!loggedIn">
+<div *ngIf="!loggedIn else alreadyLoggedIn">
     <form [formGroup]="form" (submit)="submitForm()">
         <div>
             <label for="name">Email</label>
@@ -16,3 +16,8 @@
         </div>
     </form>    
 </div>
+
+
+<ng-template #alreadyLoggedIn>
+    <div> You are already Logged In</div>
+</ng-template>

@@ -4,11 +4,12 @@ const TARGET = {
   };
   
   const PROXY_CONFIG = {
-    "/weatherforecast": TARGET,
+    "/api": TARGET,
     "/manage/info": TARGET,
     "/login": TARGET,
     "/logout": TARGET,
-    "/register": TARGET
+    "/register": TARGET,
+    "/role" : TARGET
   };
   
   module.exports = PROXY_CONFIG;

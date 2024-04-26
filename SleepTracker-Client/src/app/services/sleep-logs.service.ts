@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, asyncScheduler, catchError, scheduled, tap, throwError } from 'rxjs';
-import { SleepLog } from './sleep-logs';
+import { SleepLog } from '../models/sleep-logs';
 import { query } from '@angular/animations';
 import { NotificationsService } from './notifications.service';
 
