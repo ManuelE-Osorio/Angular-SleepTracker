@@ -81,10 +81,10 @@ public class SleepTracker
 
         app.UseHttpsRedirection();
 
-        app.UseCors("AllowAnyOrigin");
         app.MapControllers();
         app.MapIdentityApi<IdentityUser>();
         app.MapSwagger();
+        app.UseCors("AllowAnyOrigin");
         app.Run();
     }
 }

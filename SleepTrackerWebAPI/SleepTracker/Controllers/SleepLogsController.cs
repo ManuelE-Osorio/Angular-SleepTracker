@@ -28,12 +28,9 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         if (_context.Users == null)
             return TypedResults.Problem("Entity set 'Users'  is null.");
 
-        var query = from m in _context.SleepLogs 
+        var query = from m in _context.SleepLogs.Include( p => p.User ) 
             select m ;  
-
-        var sdf = _userManager.GetUserId(User);
-        var sdf2 = _userManager.GetUserName(User);
-
+            
         query = query.OrderByDescending( p => p.StartDate);
         
         if( DateTime.TryParse( date, out DateTime dateResult))
@@ -41,7 +38,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
 
         query = query.Skip(startIndex ?? 0).Take(pageSize ?? 5);
 
-        return TypedResults.Ok(await query.Select( p => new SleepLogDto(p)).ToListAsync());
+        return TypedResults.Ok(await query.Select( p => new SleepLogAdminDto(p)).ToListAsync());
     }
 
     [HttpGet]

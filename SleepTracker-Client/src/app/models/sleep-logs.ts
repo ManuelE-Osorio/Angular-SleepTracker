@@ -2,8 +2,9 @@ export interface SleepLog {
     id: number;
     startDate: Date;
     endDate: Date;
+    duration: string;
     comments: string;
-    userId: string;
+    userName: string;
 }
 
 export interface NotificationMessage{

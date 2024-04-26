@@ -1,1 +1,33 @@
-<p>sleep-logs-list-admin works!</p>
+<div>
+    <table *ngIf="SleepLogs.length > 0; else EmptyList">
+        <thead>
+            <tr>
+                <th> Start Date</th>
+                <th> End Date</th>
+                <th> Duration </th>
+                <th> Comments</th>
+                <th> User Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let log of SleepLogs">
+                <td> {{log.startDate.toLocaleDateString()}} {{log.startDate.toLocaleTimeString()}}</td>
+                <td> {{log.endDate.toLocaleDateString()}} {{log.endDate.toLocaleTimeString()}}</td>
+                <td> {{log.duration}}</td>
+                <td> {{log.comments}}</td>
+                <td> {{log.userName}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <button (click)="previousPage()"> Previous</button>
+        <button (click)="nextPage()"> Next</button>
+    </div>
+
+</div>
+
+
+<ng-template #EmptyList>
+    <h3> No logs found</h3>
+</ng-template>

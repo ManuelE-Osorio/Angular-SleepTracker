@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable, asyncScheduler, catchError, scheduled, tap, throwError } from 'rxjs';
+import { Observable, asyncScheduler, catchError, map, scheduled, tap, throwError } from 'rxjs';
 import { SleepLog } from '../models/sleep-logs';
 import { query } from '@angular/animations';
 import { NotificationsService } from './notifications.service';
@@ -10,14 +10,14 @@ import { NotificationsService } from './notifications.service';
 })
 export class SleepLogsService {
 
-  private baseUrl = "https://localhost:7245/api/sleeplogs";
+  private baseUrl = "/api/sleeplogs";
 
   constructor(
     private http: HttpClient,
     private notificationService: NotificationsService
   ) {}
 
-  getAllLogs(date?: string, startIndex: number = 0) : Observable<HttpResponse<SleepLog[]>> {
+  getAllLogs(date?: string, startIndex: number = 0) : Observable<SleepLog[]> {
     
     let options = new HttpParams();
     
@@ -25,17 +25,22 @@ export class SleepLogsService {
     options = startIndex? options.set('startIndex', startIndex) : options;
 
     return this.http.get<SleepLog[]>(`${this.baseUrl}/all`, {
-      observe: 'response',
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
-      catchError(this.logError<HttpResponse<SleepLog[]>>())
+      catchError(this.logError<SleepLog[]>()),
+      map( logs => logs.map( log => {
+        log.startDate = new Date(log.startDate);
+        log.endDate = new Date( log.endDate);
+        log.duration = ((log.endDate.valueOf() - log.startDate.valueOf())/3600000).toString();
+        return log;
+      }))
     );
   }
 
-  getLogs(date?: string, startIndex: number = 0) : Observable<HttpResponse<SleepLog[]>> {
+  getLogs(date?: string, startIndex: number = 0) : Observable<SleepLog[]> {
     
     let options = new HttpParams();
     
@@ -43,24 +48,34 @@ export class SleepLogsService {
     options = startIndex? options.set('startIndex', startIndex) : options;
 
     return this.http.get<SleepLog[]>(`${this.baseUrl}`, {
-      observe: 'response',
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
-      catchError(this.logError<HttpResponse<SleepLog[]>>())
+      catchError(this.logError<SleepLog[]>()),
+      map( logs => logs.map( log => {
+        log.startDate = new Date(log.startDate);
+        log.endDate = new Date( log.endDate);
+        log.duration = ((log.endDate.valueOf() - log.startDate.valueOf())/3600000).toString();
+        return log;
+      }))
     );
   }
 
-  getLog( id: number) : Observable<HttpResponse<SleepLog>> {
+  getLog( id: number) : Observable<SleepLog> {
     return this.http.get<SleepLog>( `${this.baseUrl}/${id}`, {
-      observe: 'response',
       responseType: 'json',
       withCredentials: true
     }).pipe(
       tap( {next: () => this.log(`Item fetched succesfully`, 'success')}),
-      catchError(this.logError<HttpResponse<SleepLog>>())
+      catchError(this.logError<SleepLog>()),
+      map( log => {
+        log.startDate = new Date(log.startDate);
+        log.endDate = new Date( log.endDate);
+        log.duration = ((log.endDate.valueOf() - log.startDate.valueOf())/3600000).toString();
+        return log;
+      })
     );
   }
 
