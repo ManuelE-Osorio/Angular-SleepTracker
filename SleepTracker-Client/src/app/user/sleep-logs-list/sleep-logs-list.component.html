@@ -6,6 +6,7 @@
                 <th> End Date</th>
                 <th> Duration </th>
                 <th> Comments</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -14,6 +15,9 @@
                 <td> {{log.endDate.toLocaleDateString()}} {{log.endDate.toLocaleTimeString()}}</td>
                 <td> {{log.duration}}</td>
                 <td> {{log.comments}}</td>
+                <td>
+                    <button (click)="setSleepLog(log)"> Details</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -25,6 +29,7 @@
 
 </div>
 
+<app-sleep-log-details *ngIf="SelectedLog!= undefined" [sleepLog]="SelectedLog"></app-sleep-log-details>
 
 <ng-template #EmptyList>
     <h3> No logs found</h3>

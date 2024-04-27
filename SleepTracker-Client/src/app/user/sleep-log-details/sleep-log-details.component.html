@@ -1,1 +1,26 @@
-<p>sleep-log-details works!</p>
+<form *ngIf="sleepLog" [formGroup]="form" (ngSubmit)="submitForm()">
+
+    <h2> Sleep Log Details</h2>
+  
+    <div>
+      <label for="startDate">Start Date: </label>
+      <input class="input" id="startDate" type="datetime-local" name="startDate" formControlName="startDate">
+    </div>
+  
+    <div>
+      <label for="endDate">End Date: </label>
+      <input class="input" id="endDate" type="datetime-local" name="endDate" formControlName="endDate">
+    </div>
+  
+    <div>
+      <label for="comments">Comments: </label>
+      <textarea class="input" id="comments" formControlName="comments" rows="3" required></textarea>
+    </div>
+  
+    <div>
+      <button type="button" (click)="cancel()">Cancel</button>
+      <button type="button" (click)="delete()">Delete</button>
+      <input type="submit" value="Update">
+    </div>
+  
+  </form>

@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { SleepLogsService } from '../../services/sleep-logs.service';
 import { SleepLog } from '../../models/sleep-logs';
 import { NgFor, NgIf } from '@angular/common';
+import { SleepLogDetailsComponent } from '../sleep-log-details/sleep-log-details.component';
 
 @Component({
   selector: 'app-sleep-logs-list',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, SleepLogDetailsComponent],
   templateUrl: './sleep-logs-list.component.html',
   styleUrl: './sleep-logs-list.component.css'
 })
@@ -18,6 +19,7 @@ export class SleepLogsListComponent implements OnInit {
 
   index: number = 0;
   SleepLogs : SleepLog[] = [];
+  SelectedLog? : SleepLog; 
 
   ngOnInit(): void {
     this.getLogs();
@@ -37,6 +39,10 @@ export class SleepLogsListComponent implements OnInit {
     if( this.index < 0)
       this.index = 0
     this.getLogs();
+  }
+
+  setSleepLog(log: SleepLog) {
+    this.SelectedLog = log;
   }
 
 }

@@ -1,1 +1,9 @@
-<p>sleep-log-session works!</p>
+<div>
+    <button *ngIf="!isRunning" (click)="start()"> Start Session</button>
+    <button *ngIf="isRunning" (click)="stop()"> Stop Session</button>
+    <button *ngIf="isSaveable" (click)="save()" > Save Current Session</button>
+    <div *ngIf="elapsedTime.length > 0">
+        {{elapsedTime}}
+    </div>
+
+</div>

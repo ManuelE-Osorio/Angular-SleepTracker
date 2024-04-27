@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, asyncScheduler, catchError, map, scheduled, tap, throwError } from 'rxjs';
-import { SleepLog } from '../models/sleep-logs';
+import { DateToDuration, SleepLog } from '../models/sleep-logs';
 import { query } from '@angular/animations';
 import { NotificationsService } from './notifications.service';
 
@@ -57,7 +57,7 @@ export class SleepLogsService {
       map( logs => logs.map( log => {
         log.startDate = new Date(log.startDate);
         log.endDate = new Date( log.endDate);
-        log.duration = ((log.endDate.valueOf() - log.startDate.valueOf())/3600000).toString();
+        log.duration = DateToDuration(log);
         return log;
       }))
     );
@@ -73,25 +73,30 @@ export class SleepLogsService {
       map( log => {
         log.startDate = new Date(log.startDate);
         log.endDate = new Date( log.endDate);
-        log.duration = ((log.endDate.valueOf() - log.startDate.valueOf())/3600000).toString();
+        log.duration = DateToDuration(log);
         return log;
       })
     );
   }
 
-  postLog( log: SleepLog, userdId: string) : Observable<HttpResponse<SleepLog>> {
+  postLog( log: SleepLog, userdId: string = '') : Observable<SleepLog> {
     let options = new HttpParams();
     
     options = userdId? options.set('userId', userdId) : options;
 
     return this.http.post<SleepLog>(`${this.baseUrl}`, log, {
-      observe: 'response',
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Item created succesfully`, 'success')}),
-      catchError( this.logError<HttpResponse<SleepLog>>())
+      catchError( this.logError<SleepLog>()),
+      map( log => {
+        log.startDate = new Date(log.startDate);
+        log.endDate = new Date( log.endDate);
+        log.duration = DateToDuration(log);
+        return log;
+      })
     );
   }
 
@@ -106,14 +111,13 @@ export class SleepLogsService {
     );
   }
 
-  deleteLog( id: number ) : Observable<HttpResponse<SleepLog>> {
+  deleteLog( id: number ) : Observable<SleepLog> {
     return this.http.delete<SleepLog>( `${this.baseUrl}/${id}`, {
-      observe: 'response',
       responseType: 'json',
       withCredentials: true
     }).pipe(
       tap( {next: () => this.log(`Item deleted succesfully`, 'success')}),
-      catchError( this.logError<HttpResponse<SleepLog>>() )
+      catchError( this.logError<SleepLog>() )
     );
   }
 
