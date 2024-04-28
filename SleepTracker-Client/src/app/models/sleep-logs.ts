@@ -10,11 +10,11 @@ export interface SleepLog {
 }
 
 export interface SleepLogForm {
-    id: FormControl<number>;
+    id?: FormControl<number>;
     startDate: FormControl<string>;
     endDate: FormControl<string>;
     comments: FormControl<string | undefined>;
-    username?: FormControl<string>;
+    userName?: FormControl<string | undefined>;
 }
 
 export interface NotificationMessage{

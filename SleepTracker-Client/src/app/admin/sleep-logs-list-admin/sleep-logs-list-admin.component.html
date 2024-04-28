@@ -1,3 +1,7 @@
+<div> 
+    <button (click)="CreateLog = true"> Create</button>
+</div>
+
 <div>
     <table *ngIf="SleepLogs.length > 0; else EmptyList">
         <thead>
@@ -7,6 +11,7 @@
                 <th> Duration </th>
                 <th> Comments</th>
                 <th> User Name</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +21,9 @@
                 <td> {{log.duration}}</td>
                 <td> {{log.comments}}</td>
                 <td> {{log.userName}}</td>
+                <td>
+                    <button (click)="setSleepLog(log)"> Details</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -26,6 +34,12 @@
     </div>
 
 </div>
+
+<app-sleep-log-details-admin *ngIf="SelectedLog != undefined" [sleepLog]="SelectedLog" (closed)="closeDetails($event)"></app-sleep-log-details-admin>
+
+
+<app-sleep-log-create-admin *ngIf="CreateLog" (closed)="closeCreate($event)"></app-sleep-log-create-admin>
+
 
 
 <ng-template #EmptyList>

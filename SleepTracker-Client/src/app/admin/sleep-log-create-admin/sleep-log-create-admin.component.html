@@ -1,4 +1,4 @@
-<form *ngIf="sleepLog" [formGroup]="form" (ngSubmit)="submitForm()">
+<form [formGroup]="form" (ngSubmit)="submitForm()">
 
     <h2> Sleep Log Details</h2>
   
@@ -16,11 +16,15 @@
       <label for="comments">Comments: </label>
       <textarea class="input" id="comments" formControlName="comments" rows="3" required></textarea>
     </div>
+
+    <div>
+      <label for="userName">User Name: </label>
+      <input class="input" id="userName" type="text" name="userName" formControlName="userName">
+    </div>
   
     <div>
       <button type="button" (click)="close()">Cancel</button>
-      <button type="button" (click)="delete()">Delete</button>
-      <input type="submit" value="Update">
+      <input type="submit" value="Create">
     </div>
   
   </form>

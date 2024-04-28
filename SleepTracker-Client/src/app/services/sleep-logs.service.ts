@@ -34,8 +34,8 @@ export class SleepLogsService {
       catchError(this.logError<SleepLog[]>()),
       map( logs => logs.map( log => {
         log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
         return log;
       }))
     );
@@ -57,8 +57,8 @@ export class SleepLogsService {
       catchError(this.logError<SleepLog[]>()),
       map( logs => logs.map( log => {
         log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
         return log;
       }))
     );
@@ -73,8 +73,8 @@ export class SleepLogsService {
       catchError(this.logError<SleepLog>()),
       map( log => {
         log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
         return log;
       })
     );
@@ -94,21 +94,20 @@ export class SleepLogsService {
       catchError( this.logError<SleepLog>()),
       map( log => {
         log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
         return log;
       })
     );
   }
 
-  putLog( log: SleepLog ) : Observable<HttpResponse<SleepLog>> {
+  putLog( log: SleepLog ) : Observable<SleepLog> {
     return this.http.put<SleepLog>( `${this.baseUrl}/${log.id}`, log, {
-      observe: 'response',
       responseType: 'json',
       withCredentials: true,
     }).pipe(
       tap( {next: () => this.log(`Item modified succesfully`, 'success')}),
-      catchError( this.logError<HttpResponse<SleepLog>>())
+      catchError( this.logError<SleepLog>())
     );
   }
 
