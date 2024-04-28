@@ -20,7 +20,7 @@ export class SleepLogDetailsComponent implements OnInit, OnChanges {
     ]} ),
     startDate: new FormControl<string>(new Date().toLocaleDateString(), {nonNullable: true, validators: Validators.required}),
     endDate: new FormControl<string>(new Date().toLocaleDateString(), {nonNullable: true, validators: Validators.required}),
-    comments: new FormControl<string>('', {nonNullable: true})
+    comments: new FormControl<string | undefined>('', {nonNullable: true})
   });
 
   @Input() sleepLog?: SleepLog;
@@ -30,7 +30,11 @@ export class SleepLogDetailsComponent implements OnInit, OnChanges {
   ) {}
 
   submitForm(){
-
+    console.log(this.form.valid)
+    if(this.form.valid){
+      this.sleepLog = Object.assign(this.form.value);
+      console.log(this.sleepLog)
+    }
   }
 
   ngOnInit(): void {
@@ -39,6 +43,13 @@ export class SleepLogDetailsComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.setForm();
+  }
+
+  update() {
+    if(this.sleepLog != undefined){
+      this.sleepLogService.putLog(this.sleepLog).subscribe()
+    }
+    
   }
 
   delete() {
@@ -50,8 +61,8 @@ export class SleepLogDetailsComponent implements OnInit, OnChanges {
   setForm() {
     if (this.sleepLog != undefined){
       this.form.controls.id.setValue(this.sleepLog.id!)
-      this.form.controls.startDate.setValue(formatDate(this.sleepLog.startDate, 'yyyy-MM-dd', 'en'))
-      this.form.controls.endDate.setValue(formatDate(this.sleepLog.endDate, 'yyyy-MM-dd', 'en'))
+      this.form.controls.startDate.setValue(formatDate(this.sleepLog.startDate!, 'yyyy-MM-ddTHH:mm', 'en'))
+      this.form.controls.endDate.setValue(formatDate(this.sleepLog.endDate!, 'yyyy-MM-ddTHH:mm', 'en'))
       this.form.controls.comments.setValue(this.sleepLog.comments)
     }  
   }

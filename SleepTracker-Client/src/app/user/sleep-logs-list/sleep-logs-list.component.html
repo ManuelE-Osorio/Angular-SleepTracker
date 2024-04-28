@@ -11,8 +11,8 @@
         </thead>
         <tbody>
             <tr *ngFor="let log of SleepLogs">
-                <td> {{log.startDate.toLocaleDateString()}} {{log.startDate.toLocaleTimeString()}}</td>
-                <td> {{log.endDate.toLocaleDateString()}} {{log.endDate.toLocaleTimeString()}}</td>
+                <td> {{log.startDate}}</td>
+                <td> {{log.endDate}}</td>
                 <td> {{log.duration}}</td>
                 <td> {{log.comments}}</td>
                 <td>
@@ -29,7 +29,7 @@
 
 </div>
 
-<app-sleep-log-details *ngIf="SelectedLog!= undefined" [sleepLog]="SelectedLog"></app-sleep-log-details>
+<app-sleep-log-details *ngIf="SelectedLog != undefined" [sleepLog]="SelectedLog"></app-sleep-log-details>
 
 <ng-template #EmptyList>
     <h3> No logs found</h3>

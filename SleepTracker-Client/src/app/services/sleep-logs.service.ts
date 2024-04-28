@@ -4,6 +4,7 @@ import { Observable, asyncScheduler, catchError, map, scheduled, tap, throwError
 import { DateToDuration, SleepLog } from '../models/sleep-logs';
 import { query } from '@angular/animations';
 import { NotificationsService } from './notifications.service';
+import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +33,9 @@ export class SleepLogsService {
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
       catchError(this.logError<SleepLog[]>()),
       map( logs => logs.map( log => {
-        log.startDate = new Date(log.startDate);
-        log.endDate = new Date( log.endDate);
-        log.duration = ((log.endDate.valueOf() - log.startDate.valueOf())/3600000).toString();
+        log.duration = DateToDuration(log);
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
         return log;
       }))
     );
@@ -55,9 +56,9 @@ export class SleepLogsService {
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
       catchError(this.logError<SleepLog[]>()),
       map( logs => logs.map( log => {
-        log.startDate = new Date(log.startDate);
-        log.endDate = new Date( log.endDate);
         log.duration = DateToDuration(log);
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
         return log;
       }))
     );
@@ -71,9 +72,9 @@ export class SleepLogsService {
       tap( {next: () => this.log(`Item fetched succesfully`, 'success')}),
       catchError(this.logError<SleepLog>()),
       map( log => {
-        log.startDate = new Date(log.startDate);
-        log.endDate = new Date( log.endDate);
         log.duration = DateToDuration(log);
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
         return log;
       })
     );
@@ -92,9 +93,9 @@ export class SleepLogsService {
       tap( {next: () => this.log(`Item created succesfully`, 'success')}),
       catchError( this.logError<SleepLog>()),
       map( log => {
-        log.startDate = new Date(log.startDate);
-        log.endDate = new Date( log.endDate);
         log.duration = DateToDuration(log);
+        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-dd, HH:mm', 'en');
+        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-dd, HH:mm', 'en');
         return log;
       })
     );

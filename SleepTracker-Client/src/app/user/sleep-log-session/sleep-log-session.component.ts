@@ -60,7 +60,7 @@ export class SleepLogSessionComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     if(this.sleepLogSessionService.isRunning){
-      this.initialTime = Math.floor((Date.now().valueOf() - this.sleepLogSessionService.sleepLogSession!.startDate.valueOf())/1000);
+      this.initialTime = Math.floor((Date.now() - new Date(this.sleepLogSessionService.sleepLogSession!.startDate!).valueOf())/1000);
       this.start();
     }
   }

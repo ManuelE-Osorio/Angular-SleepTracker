@@ -11,8 +11,8 @@
         </thead>
         <tbody>
             <tr *ngFor="let log of SleepLogs">
-                <td> {{log.startDate.toLocaleDateString()}} {{log.startDate.toLocaleTimeString()}}</td>
-                <td> {{log.endDate.toLocaleDateString()}} {{log.endDate.toLocaleTimeString()}}</td>
+                <td> {{log.startDate}}</td>
+                <td> {{log.endDate}}</td>
                 <td> {{log.duration}}</td>
                 <td> {{log.comments}}</td>
                 <td> {{log.userName}}</td>

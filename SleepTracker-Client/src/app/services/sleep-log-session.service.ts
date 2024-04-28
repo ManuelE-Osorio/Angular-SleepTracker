@@ -18,8 +18,8 @@ export class SleepLogSessionService implements OnDestroy{
   start(){
     if(!this.isRunning){
       this.sleepLogSession = {
-        startDate : new Date(Date.now()),
-        endDate : new Date(Date.now()),
+        startDate : new Date(Date.now()).toISOString(),
+        endDate : '',
         duration : '',
         comments : '',
         userName : '',
@@ -34,7 +34,7 @@ export class SleepLogSessionService implements OnDestroy{
 
   stop() {
     if( this.isRunning = true && this.sleepLogSession != undefined){
-      this.sleepLogSession.endDate = new Date(Date.now())
+      this.sleepLogSession.endDate = new Date(Date.now()).toISOString();
       this.isRunning = false;
     }
   }
