@@ -36,9 +36,20 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         if( DateTime.TryParse( date, out DateTime dateResult))
             query = query.Where( p => p.StartDate!.Value.Date == dateResult.Date);
 
+        var totalRecords = query.Count();
         query = query.Skip(startIndex ?? 0).Take(pageSize ?? 5);
 
-        return TypedResults.Ok(await query.Select( p => new SleepLogAdminDto(p)).ToListAsync());
+        var pageData = new SleepLogAdminDtoPageData(
+            await query.Select(p => new SleepLogAdminDto(p)).ToListAsync())
+        {
+            TotalRecords = totalRecords,
+            CurrentPage = (startIndex ?? 0) / (pageSize ?? 5),
+            PageSize = pageSize ?? 5,
+            TotalPages = (int)Math.Ceiling((double)(totalRecords / (pageSize ?? 5)))
+        };
+
+
+        return TypedResults.Ok(pageData);
     }
 
     [HttpGet]
@@ -58,9 +69,21 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         if( DateTime.TryParse( date, out DateTime dateResult))
             query = query.Where( p => p.StartDate!.Value.Date == dateResult.Date);
 
+
+        var totalRecords = query.Count();
+
         query = query.Skip(startIndex ?? 0).Take(pageSize ?? 5);
 
-        return TypedResults.Ok(await query.Select( p => new SleepLogDto(p)).ToListAsync());
+        var pageData = new SleepLogDtoPageData(
+            await query.Select(p => new SleepLogDto(p)).ToListAsync())
+        {
+            TotalRecords = totalRecords,
+            CurrentPage = (startIndex ?? 0) / (pageSize ?? 5),
+            PageSize = pageSize ?? 5,
+            TotalPages = (int)Math.Ceiling((double)(totalRecords / (pageSize ?? 5)))
+        };
+
+        return TypedResults.Ok(pageData);
     }
 
     [HttpGet("{id}")]
@@ -95,7 +118,12 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         var user = await _userManager.GetUserAsync(User);
 
         if( User.IsInRole("Admin") && userId is not null)
-            log.User = await _userManager.FindByIdAsync(userId);
+            
+            log.User = await _userManager.FindByNameAsync(userId);
+            if( log.User is null)
+            {
+                TypedResults.BadRequest();
+            }
         else
             log.User = user;
 

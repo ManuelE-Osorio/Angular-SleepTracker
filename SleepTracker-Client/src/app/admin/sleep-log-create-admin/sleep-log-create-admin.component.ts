@@ -2,13 +2,24 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SleepLog, SleepLogForm } from '../../models/sleep-logs';
 import { SleepLogsService } from '../../services/sleep-logs.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-sleep-log-create-admin',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatButtonModule
+  ],
   templateUrl: './sleep-log-create-admin.component.html',
-  styleUrl: './sleep-log-create-admin.component.css'
+  styleUrl: './sleep-log-create-admin.component.css',
+  
 })
 export class SleepLogCreateAdminComponent {
   @Output() closed = new EventEmitter();

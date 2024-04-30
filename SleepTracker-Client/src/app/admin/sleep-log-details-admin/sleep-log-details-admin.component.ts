@@ -3,11 +3,22 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SleepLogForm, SleepLog } from '../../models/sleep-logs';
 import { SleepLogsService } from '../../services/sleep-logs.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-sleep-log-details-admin',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule],
+  imports: [
+    NgIf, 
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatButtonModule
+  ],
   templateUrl: './sleep-log-details-admin.component.html',
   styleUrl: './sleep-log-details-admin.component.css'
 })
@@ -19,6 +30,7 @@ export class SleepLogDetailsAdminComponent {
     startDate: new FormControl<string>(new Date().toLocaleDateString(), {nonNullable: true, validators: Validators.required}),
     endDate: new FormControl<string>(new Date().toLocaleDateString(), {nonNullable: true, validators: Validators.required}),
     comments: new FormControl<string | undefined>('', {nonNullable: true}),
+    userName: new FormControl<string | undefined>(' ', {nonNullable: true}),
   });
 
   @Input() sleepLog: SleepLog = {};
@@ -63,6 +75,7 @@ export class SleepLogDetailsAdminComponent {
       this.form.controls.startDate.setValue(formatDate(this.sleepLog.startDate!, 'yyyy-MM-ddTHH:mm', 'en'))
       this.form.controls.endDate.setValue(formatDate(this.sleepLog.endDate!, 'yyyy-MM-ddTHH:mm', 'en'))
       this.form.controls.comments.setValue(this.sleepLog.comments)
+      this.form.controls.userName?.setValue(this.sleepLog.userName)
     }  
   }
 

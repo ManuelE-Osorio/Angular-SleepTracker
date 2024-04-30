@@ -17,6 +17,14 @@ export interface SleepLogForm {
     userName?: FormControl<string | undefined>;
 }
 
+export interface SleepLogPageData{
+    sleepLogs: SleepLog[];
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+    totalRecords: number;
+}
+
 export interface NotificationMessage{
     message : string;
     type: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, asyncScheduler, catchError, map, scheduled, tap, throwError } from 'rxjs';
-import { DateToDuration, SleepLog } from '../models/sleep-logs';
+import { DateToDuration, SleepLog, SleepLogPageData } from '../models/sleep-logs';
 import { query } from '@angular/animations';
 import { NotificationsService } from './notifications.service';
 import { formatDate } from '@angular/common';
@@ -18,50 +18,61 @@ export class SleepLogsService {
     private notificationService: NotificationsService
   ) {}
 
-  getAllLogs(date?: string, startIndex: number = 0) : Observable<SleepLog[]> {
+  getAllLogs(startIndex: number = 0, date?: string) : Observable<SleepLogPageData> {
     
     let options = new HttpParams();
     
     options = date? options.set('date', date) : options;
     options = startIndex? options.set('startIndex', startIndex) : options;
 
-    return this.http.get<SleepLog[]>(`${this.baseUrl}/all`, {
+    return this.http.get<SleepLogPageData>(`${this.baseUrl}/all`, {
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
-      catchError(this.logError<SleepLog[]>()),
-      map( logs => logs.map( log => {
-        log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        return log;
-      }))
+      catchError(this.logError<SleepLogPageData>()),
+      map( (resp) => { return {
+        sleepLogs : resp.sleepLogs.map( log => {
+          log.duration = DateToDuration(log);
+          log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          return log; }),
+        currentPage : resp.currentPage,
+        pageSize: resp.pageSize,
+        totalPages: resp.totalPages,
+        totalRecords: resp.totalRecords
+      }}),
+      
     );
   }
 
-  getLogs(date?: string, startIndex: number = 0) : Observable<SleepLog[]> {
+  getLogs(startIndex: number = 0, date?: string) : Observable<SleepLogPageData> {
     
     let options = new HttpParams();
     
     options = date? options.set('date', date) : options;
     options = startIndex? options.set('startIndex', startIndex) : options;
 
-    return this.http.get<SleepLog[]>(`${this.baseUrl}`, {
+    return this.http.get<SleepLogPageData>(`${this.baseUrl}`, {
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
-      catchError(this.logError<SleepLog[]>()),
-      map( logs => logs.map( log => {
-        log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        return log;
-      }))
-    );
+      catchError(this.logError<SleepLogPageData>()),
+      map( (resp) => { return {
+        sleepLogs : resp.sleepLogs.map( log => {
+          log.duration = DateToDuration(log);
+          log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          return log; }),
+        currentPage : resp.currentPage,
+        pageSize: resp.pageSize,
+        totalPages: resp.totalPages,
+        totalRecords: resp.totalRecords
+      }}),
+      );
   }
 
   getLog( id: number) : Observable<SleepLog> {

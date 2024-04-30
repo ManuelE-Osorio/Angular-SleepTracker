@@ -3,35 +3,55 @@
 </div>
 
 <div>
-    <table *ngIf="SleepLogs.length > 0; else EmptyList">
-        <thead>
-            <tr>
-                <th> Start Date</th>
-                <th> End Date</th>
-                <th> Duration </th>
-                <th> Comments</th>
-                <th> User Name</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let log of SleepLogs">
-                <td> {{log.startDate}}</td>
-                <td> {{log.endDate}}</td>
-                <td> {{log.duration}}</td>
-                <td> {{log.comments}}</td>
-                <td> {{log.userName}}</td>
-                <td>
-                    <button (click)="setSleepLog(log)"> Details</button>
-                </td>
-            </tr>
-        </tbody>
+    <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="startDate">
+            <th mat-header-cell *matHeaderCellDef> Start Date </th>
+            <td mat-cell *matCellDef="let SleepLog"> {{SleepLog.startDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="endDate">
+            <th mat-header-cell *matHeaderCellDef> End Date </th>
+            <td mat-cell *matCellDef="let SleepLog"> {{SleepLog.endDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Duration </th>
+            <td mat-cell *matCellDef="let SleepLog"> {{SleepLog.duration}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="comments">
+            <th mat-header-cell *matHeaderCellDef> Comments </th>
+            <td mat-cell *matCellDef="let SleepLog"> {{SleepLog.comments}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef> User Name </th>
+            <td mat-cell *matCellDef="let SleepLog"> {{SleepLog.userName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="details">
+            <th mat-header-cell *matHeaderCellDef> Details</th>
+            <td mat-cell *matCellDef="let SleepLog">
+                <button mat-icon-button (click)="setSleepLog(SleepLog)">
+                    <mat-icon>menu</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+
     </table>
 
-    <div>
-        <button (click)="previousPage()"> Previous</button>
-        <button (click)="nextPage()"> Next</button>
-    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+    <mat-paginator [pageSizeOptions]="[5]"
+        [length]="totalData"
+        [hidePageSize]="true"
+        showFirstLastButtons
+        (page)="onChangePage($event)">
+    </mat-paginator>
 
 </div>
 
