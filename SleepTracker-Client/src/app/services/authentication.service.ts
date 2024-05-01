@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Account, AccountDto } from "../models/account";
-import { BehaviorSubject, Observable, Subject, asyncScheduler, catchError, map, of, scheduled, tap } from "rxjs";
+import { BehaviorSubject, Observable, Subject, asyncScheduler, catchError, map, of, scheduled, subscribeOn, tap } from "rxjs";
 import { NotificationsService } from "./notifications.service";
 
 @Injectable({
@@ -15,9 +15,19 @@ export class AuthenticationService {
     ) { }
 
   private _authStateChanged: Subject<boolean> = new BehaviorSubject<boolean>(false);
+  private _accountInfo: Subject<AccountDto | null> = new BehaviorSubject<AccountDto | null>(null);
+  private _isAdmin: Subject<boolean> = new BehaviorSubject<boolean>(false);
 
   public onStateChanged() {
     return this._authStateChanged.asObservable();
+  }
+
+  public accountInfo() {
+    return this._accountInfo.asObservable();
+  }
+
+  public isAdmin2() {
+    return this._isAdmin.asObservable();
   }
 
   public logIn(account: Account) : Observable<any> {
@@ -28,7 +38,8 @@ export class AuthenticationService {
       catchError( this.logError<any>(false)),
       map( (res) => {
         if(res.status == 200){
-          this._authStateChanged.next(true)
+          this._authStateChanged.next(true);
+          this.getInfo().subscribe();
         }
         return res
     }));
@@ -51,19 +62,6 @@ export class AuthenticationService {
     );    
   }
 
-  // register new user
-  // public register(email: string, password: string) {
-  //   return this.http.post('/register', {
-  //     email: email,
-  //     password: password
-  //   }, {
-  //     observe: 'response',
-  //     responseType: 'text'
-  //   })
-  //     .pipe<boolean>(map((res: HttpResponse<string>) => {
-  //       return res.ok;
-  //     }));
-  // }
   public getInfo() : Observable<AccountDto | null> {
     return this.http.get<AccountDto | null>('/manage/info', {
       withCredentials: true,
@@ -71,6 +69,11 @@ export class AuthenticationService {
     }).pipe(
       tap( {next: () => this.log('Fetching user data', 'success')}),
       catchError( () => scheduled([null], asyncScheduler)),
+      map( (res) => {     
+        
+        this._accountInfo.next(res);
+        return res
+      })
     )
   }
 
@@ -83,20 +86,26 @@ export class AuthenticationService {
       catchError( () => scheduled([null], asyncScheduler) ),
       map((resp) => {
         if( resp!= null && resp.email.length > 0 ){
+            this._authStateChanged.next(true);
             return true;
           }
+        this._authStateChanged.next(false);
         return false;
       })
     );
   }
 
-  public isAdmin() : Observable<boolean> {
+  public getAdmin() : Observable<boolean> {
     return this.http.get<boolean>('/role', {
       withCredentials: true,
       responseType: 'json'
     }).pipe(
       tap( {next: () => this.log(`Admin Request`, `success`)}),
-      catchError( () => scheduled([false], asyncScheduler)),      
+      catchError( () => scheduled([false], asyncScheduler)),
+      map( (res) => {     
+        this._isAdmin.next(res);
+        return res
+      })      
     )
   }
 

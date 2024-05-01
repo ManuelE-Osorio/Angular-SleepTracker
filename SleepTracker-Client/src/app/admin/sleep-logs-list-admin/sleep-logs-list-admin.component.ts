@@ -11,6 +11,12 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDialog, MatDialogRef, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent} from '@angular/material/dialog';
 import { SleepLogDetailsComponent } from '../../user/sleep-log-details/sleep-log-details.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 
 @Component({
   selector: 'app-sleep-logs-list-admin',
@@ -25,6 +31,10 @@ import { MatButtonModule } from '@angular/material/button';
     MatPaginatorModule,
     MatIconModule,
     MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
   ],
   templateUrl: './sleep-logs-list-admin.component.html',
   styleUrl: './sleep-logs-list-admin.component.css'
@@ -36,6 +46,8 @@ export class SleepLogsListAdminComponent {
   dataSource = new MatTableDataSource<SleepLog>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   isLoading = true;
+  private searchDate = new Subject<string>();
+  date? : string = undefined;
 
   constructor(
     private sleepLogService : SleepLogsService,
@@ -44,11 +56,25 @@ export class SleepLogsListAdminComponent {
 
   ngOnInit(): void {
     this.getLogs(0);
+    this.searchDate.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        this.date = term;
+        return this.sleepLogService.getAllLogs(0, term)
+      }),
+      ).subscribe( resp => {
+        if(resp != null){
+          this.isLoading = false;
+          this.dataSource.data = resp.sleepLogs;
+          this.paginator.length = resp.totalRecords;
+        }
+      });
   }
 
-  getLogs(startIndex: number, date?: string) {
+  getLogs(startIndex: number) {
     this.isLoading = true;
-    this.sleepLogService.getAllLogs( startIndex, date).subscribe( resp => {
+    this.sleepLogService.getAllLogs( startIndex, this.date).subscribe( resp => {
       if( resp!= null) {
         this.isLoading = false;
         this.dataSource.data = resp.sleepLogs;
@@ -76,5 +102,9 @@ export class SleepLogsListAdminComponent {
       enterAnimationDuration: '400',
       exitAnimationDuration: '400',
     }).afterClosed().subscribe(() => this.getLogs(this.paginator.pageIndex*this.paginator.pageSize));
+  }
+
+  search(term: string ): void {
+    this.searchDate.next(term);
   }
 }

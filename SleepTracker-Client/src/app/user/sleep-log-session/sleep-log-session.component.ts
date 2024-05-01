@@ -3,11 +3,22 @@ import { SleepLogSessionService } from '../../services/sleep-log-session.service
 import { NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { SleepLog } from '../../models/sleep-logs';
+import {MatIconModule} from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatCardModule} from '@angular/material/card';
+import {MatDividerModule} from '@angular/material/divider';
 
 @Component({
   selector: 'app-sleep-log-session',
   standalone: true,
-  imports: [NgIf],
+  imports: [
+    NgIf, 
+    MatIconModule,
+    MatButtonModule,
+    MatGridListModule,
+    MatCardModule
+  ],
   templateUrl: './sleep-log-session.component.html',
   styleUrl: './sleep-log-session.component.css'
 })

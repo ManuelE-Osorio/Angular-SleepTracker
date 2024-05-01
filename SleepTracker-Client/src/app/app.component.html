@@ -24,31 +24,17 @@
     </mat-toolbar>
   
     
-    <mat-drawer #drawer class="example-sidenav" mode="side" >
+    <mat-drawer #drawer class="example-sidenav" mode="side">
       <button routerLink="user" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
         User
       </button>
-      <button routerLink="admin" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
+      <button *ngIf="isAdmin" routerLink="admin" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
         Admin
       </button>
     </mat-drawer>
     
 
-    <mat-grid-list cols="6" rowHeight="1:2" class="container">
-      <mat-grid-tile [colspan]="5" [rowspan]="1">
-
-        <router-outlet> </router-outlet>  
-
-        
-      </mat-grid-tile>
-
-      <mat-grid-tile [colspan]="1" [rowspan]="1" >
-
-        <mat-divider [vertical]="true" style="height:100%"></mat-divider>
-        <app-notifications></app-notifications>
-
-      </mat-grid-tile>
-    </mat-grid-list>
+    <router-outlet></router-outlet>
     
   </mat-drawer-container>
 </main>

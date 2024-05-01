@@ -6,12 +6,12 @@ import { map } from 'rxjs';
 export const adminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const authService = inject(AuthenticationService);
-  return authService.isAdmin().pipe(
+  return authService.getAdmin().pipe(
     map( resp => {
       if(resp == true){
         return true;
       }
-      return router.createUrlTree(['login']);
+      return router.createUrlTree(['user']);
     })
   );
 };

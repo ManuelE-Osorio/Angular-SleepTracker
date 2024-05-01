@@ -1,10 +1,19 @@
-<mat-card>
+
+
+<mat-card class="card-divider">
     <mat-card-content>
-        <app-sleep-log-session></app-sleep-log-session>
-        <button mat-flat-button color="accent" (click)="openCreate()">Create</button>
+        <div class="list">
+
+            <mat-form-field appearance="outline" class="field">
+                <mat-label>Filter:</mat-label>
+                <input #dateField matInput type="date" (input)="search(dateField.value)">
+            </mat-form-field>
+
+
+            <button mat-flat-button color="accent" (click)="openCreate()">Create</button>
+        </div>
     </mat-card-content>
-<mat-card>
-        
+</mat-card>        
 
 <mat-card>
     <mat-card-content>

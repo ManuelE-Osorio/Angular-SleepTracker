@@ -13,23 +13,17 @@ import { SleepLogDetailsComponent } from './user/sleep-log-details/sleep-log-det
 
 export const routes: Routes = [
     
+    {path: '', redirectTo: '/user',  pathMatch: 'full'},
+
     {path: 'admin',
     component: AdminComponent,
-    canActivate: [adminGuard],
-    children: [
-      { path: '', component: SleepLogsListAdminComponent }
-    ]
+    canActivate: [adminGuard]
     },
 
-    { path: 'login', component: LogInComponent},
+    {path: 'signin', component: LogInComponent},
 
     { path: 'user', component: UserComponent,
-    canActivate: [userGuard],
-    children: [
-      { path: '', component: SleepLogsListComponent},
-      { path: 'create', component: SleepLogCreateComponent},
-      { path: 'details', component: SleepLogDetailsComponent}
-    ]
+    canActivate: [userGuard]
     },
     
 ];

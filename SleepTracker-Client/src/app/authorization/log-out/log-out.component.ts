@@ -24,6 +24,7 @@ export class LogOutComponent implements OnInit{
   logInFailed: boolean = false;
 
   constructor(
+    private router: Router,
     private authenticationService: AuthenticationService,    
   ){}
 
@@ -31,8 +32,11 @@ export class LogOutComponent implements OnInit{
     this.authenticationService.logOut().subscribe( resp => {
       console.log(resp)
       if( resp.status == 200){
+        this.authenticationService.isLoggedIn().subscribe();
+        this.authenticationService.getAdmin().subscribe();
         this.loggedIn = false;
         this.logInFailed = false;
+        this.router.navigate(['/signin']);
       }
     });
   }

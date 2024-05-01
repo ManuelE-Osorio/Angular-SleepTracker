@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-notifications',
@@ -14,7 +15,8 @@ import { MatInputModule } from '@angular/material/input';
     NgIf,
     MatFormFieldModule,
     MatInputModule, 
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],
   templateUrl: './notifications.component.html'
 })

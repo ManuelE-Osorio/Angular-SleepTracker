@@ -9,6 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+
 
 @Component({
   selector: 'app-log-in',
@@ -23,7 +26,9 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogActions, 
     MatDialogClose, 
     MatDialogTitle, 
-    MatDialogContent
+    MatDialogContent,
+    MatCardModule,
+    MatGridListModule,
   ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css'
@@ -43,6 +48,7 @@ export class LogInComponent implements OnInit{
   logInFailed: boolean = false;
 
   constructor(
+    private router: Router,
     private authenticationService: AuthenticationService,  
     public dialogRef: MatDialogRef<LogInComponent>  
   ){}
@@ -51,10 +57,10 @@ export class LogInComponent implements OnInit{
     this.authenticationService.logIn(account).subscribe( resp => {
       if( resp.status == 200){
         this.loggedIn = true;
-        this.dialogRef.close();
+        this.authenticationService.getAdmin().subscribe();
+        this.router.navigate(['user']);
       }
       else{
-        console.log("failes");
         this.logInFailed = true;
       }
     })
@@ -66,16 +72,6 @@ export class LogInComponent implements OnInit{
       account = Object.assign(this.form.value);
       this.logIn(account);
     }
-  }
-
-  logOut() {
-    this.authenticationService.logOut().subscribe( resp => {
-      console.log(resp)
-      if( resp.status == 200){
-        this.loggedIn = false;
-        this.logInFailed = false;
-      }
-    });
   }
 
   ngOnInit(): void {
