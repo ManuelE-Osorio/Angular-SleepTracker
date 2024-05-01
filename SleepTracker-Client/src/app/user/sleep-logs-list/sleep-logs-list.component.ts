@@ -11,6 +11,8 @@ import { catchError, map, startWith, switchMap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import { SleepLogSessionComponent } from '../sleep-log-session/sleep-log-session.component';
 
 @Component({
   selector: 'app-sleep-logs-list',
@@ -25,6 +27,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatPaginatorModule,
     MatIconModule,
     MatButtonModule,
+    MatCardModule,
+    SleepLogSessionComponent
   ],
   templateUrl: './sleep-logs-list.component.html',
   styleUrl: './sleep-logs-list.component.css'

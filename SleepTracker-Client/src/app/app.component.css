@@ -2,11 +2,12 @@
     flex: 1 1 auto;
   }
 
-/* .example-container {
-  width: 500px;
-  height: 300px;
+.container {
+  display: flex;
+  width: 99.9%;
+  height: 100%;
   border: 1px solid rgba(0, 0, 0, 0.5);
-} */
+}
 
 .example-sidenav-content {
   display: flex;
@@ -20,7 +21,7 @@
 }
 
 .full-width {
-  width: 100%;
+  width: 95%;
   margin: 8px 8px 8px 0px;
 }
   

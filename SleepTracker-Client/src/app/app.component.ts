@@ -13,7 +13,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { AuthorizationComponent } from './authorization/authorization/authorization.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatGridListModule} from '@angular/material/grid-list';
-
+import {MatCardModule} from '@angular/material/card';
+import {MatDividerModule} from '@angular/material/divider';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     AuthorizationComponent,
     MatSidenavModule,
     MatGridListModule,
+    MatCardModule,
+    MatDividerModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

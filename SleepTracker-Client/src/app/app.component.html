@@ -34,13 +34,19 @@
     </mat-drawer>
     
 
-    <mat-grid-list cols="4">
-      <mat-grid-tile [colspan]="3" [rowspan]="1">
+    <mat-grid-list cols="6" rowHeight="1:2" class="container">
+      <mat-grid-tile [colspan]="5" [rowspan]="1">
+
         <router-outlet> </router-outlet>  
+
+        
       </mat-grid-tile>
 
-      <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <mat-grid-tile [colspan]="1" [rowspan]="1" >
+
+        <mat-divider [vertical]="true" style="height:100%"></mat-divider>
         <app-notifications></app-notifications>
+
       </mat-grid-tile>
     </mat-grid-list>
     
