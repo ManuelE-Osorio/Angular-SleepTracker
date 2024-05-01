@@ -1,5 +1,5 @@
 <div> 
-    <button (click)="CreateLog = true"> Create</button>
+    <button mat-flat-button color="accent" (click)="openCreate()">Create</button>
 </div>
 
 <div>
@@ -25,6 +25,16 @@
             <td mat-cell *matCellDef="let SleepLog"> {{SleepLog.comments}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="details">
+            <th mat-header-cell *matHeaderCellDef> Details</th>
+            <td mat-cell *matCellDef="let SleepLog">
+                <button mat-icon-button (click)="openDetails(SleepLog)">
+                    <mat-icon>menu</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        
+
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
         <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
 
@@ -32,16 +42,12 @@
 
     <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
     <mat-paginator [pageSizeOptions]="[5]"
-        [length]="totalData"
         [hidePageSize]="true"
         showFirstLastButtons
         (page)="onChangePage($event)">
     </mat-paginator>
 
 </div>
-
-<app-sleep-log-details *ngIf="SelectedLog != undefined" [sleepLog]="SelectedLog" (closed)="closeDetails($event)"></app-sleep-log-details>
-<app-sleep-log-create *ngIf="CreateLog" (closed)="closeCreate($event)"></app-sleep-log-create>
 
 <ng-template #EmptyList>
     <h3> No logs found</h3>

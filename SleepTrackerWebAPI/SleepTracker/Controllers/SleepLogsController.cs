@@ -115,17 +115,16 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         if ( !ModelState.IsValid)
             return TypedResults.BadRequest();
 
-        var user = await _userManager.GetUserAsync(User);
-
         if( User.IsInRole("Admin") && userId is not null)
-            
+        {
             log.User = await _userManager.FindByNameAsync(userId);
             if( log.User is null)
             {
-                TypedResults.BadRequest();
+                return TypedResults.BadRequest();
             }
+        }   
         else
-            log.User = user;
+            log.User = await _userManager.GetUserAsync(User);
 
         _context.SleepLogs.Add(log);
         try

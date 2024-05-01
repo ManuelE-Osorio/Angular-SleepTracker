@@ -5,11 +5,16 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { Router } from "@angular/router";
 import { AuthenticationService } from "../../services/authentication.service";
 import { Account, AccountForm } from '../../models/account';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-log-out',
   standalone: true,
-  imports: [NgIf,ReactiveFormsModule],
+  imports: [
+    NgIf,
+    ReactiveFormsModule,
+    MatButton
+  ],
   templateUrl: './log-out.component.html',
   styleUrl: './log-out.component.css'
 })

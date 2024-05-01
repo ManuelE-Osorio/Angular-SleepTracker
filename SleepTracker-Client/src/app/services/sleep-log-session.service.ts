@@ -43,7 +43,7 @@ export class SleepLogSessionService implements OnDestroy{
     if( this.sleepLogSession != undefined){
       console.log('saving')
       this.sleepLogsService.postLog(this.sleepLogSession).subscribe( res => {
-        if(res.id != null){
+        if(res != null){
           this.sleepLogSession = undefined;
         }
       });

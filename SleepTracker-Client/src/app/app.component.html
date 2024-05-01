@@ -1,15 +1,19 @@
 
 <main class="main">
 
-  
+  <mat-drawer-container class="example-container" [hasBackdrop]="true">
     <mat-toolbar color="primary">
-      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+      <a class="bar-item" target="_blank" href="https://www.thecsharpacademy.com">
+        <img src="assets/logo.png" alt="TheCSharpAcademy" width="60" height="60">
+      </a>
+      <button mat-icon-button (click)="drawer.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
       <span> Sleep Tracker</span>
       <span class="example-spacer"></span>
 
-      <a routerLink="/login"> Log in</a>
+      <app-authorization></app-authorization>
+
       <a mat-icon-button target="_blank" href="https://github.com/ManuelE-Osorio">
         <mat-icon svgIcon="github" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
       </a>
@@ -19,20 +23,27 @@
 
     </mat-toolbar>
   
+    
+    <mat-drawer #drawer class="example-sidenav" mode="side" >
+      <button routerLink="user" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
+        User
+      </button>
+      <button routerLink="admin" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
+        Admin
+      </button>
+    </mat-drawer>
+    
 
-    <div> 
-      <h2> Sleep Tracker</h2>  
-      <a routerLink="user" > User</a>
-      <a routerLink="admin"> Admin</a>
-      <a routerLink="login"> Log in</a>
-      <router-outlet> </router-outlet>
-      <app-log-out></app-log-out>
-    </div>
+    <mat-grid-list cols="4">
+      <mat-grid-tile [colspan]="3" [rowspan]="1">
+        <router-outlet> </router-outlet>  
+      </mat-grid-tile>
 
-
-    <div>
-      <app-notifications></app-notifications>
-
-    </div>
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <app-notifications></app-notifications>
+      </mat-grid-tile>
+    </mat-grid-list>
+    
+  </mat-drawer-container>
 </main>
 

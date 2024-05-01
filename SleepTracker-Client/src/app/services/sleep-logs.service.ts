@@ -18,117 +18,137 @@ export class SleepLogsService {
     private notificationService: NotificationsService
   ) {}
 
-  getAllLogs(startIndex: number = 0, date?: string) : Observable<SleepLogPageData> {
+  getAllLogs(startIndex: number = 0, date?: string) : Observable<SleepLogPageData | null> {
     
     let options = new HttpParams();
     
     options = date? options.set('date', date) : options;
     options = startIndex? options.set('startIndex', startIndex) : options;
 
-    return this.http.get<SleepLogPageData>(`${this.baseUrl}/all`, {
+    return this.http.get<SleepLogPageData | null>(`${this.baseUrl}/all`, {
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
-      catchError(this.logError<SleepLogPageData>()),
-      map( (resp) => { return {
-        sleepLogs : resp.sleepLogs.map( log => {
-          log.duration = DateToDuration(log);
-          log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
-          log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
-          return log; }),
-        currentPage : resp.currentPage,
-        pageSize: resp.pageSize,
-        totalPages: resp.totalPages,
-        totalRecords: resp.totalRecords
-      }}),
-      
+      catchError(this.logError()),
+      map( (resp) => {
+        if( resp != null) {
+          return {
+          sleepLogs : resp.sleepLogs.map( log => {
+            log.duration = DateToDuration(log);
+            log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+            log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+            return log; }),
+          currentPage : resp.currentPage,
+          pageSize: resp.pageSize,
+          totalPages: resp.totalPages,
+          totalRecords: resp.totalRecords}
+        }
+        return null;  
+      }),
     );
   }
 
-  getLogs(startIndex: number = 0, date?: string) : Observable<SleepLogPageData> {
+  getLogs(startIndex: number = 0, date?: string) : Observable<SleepLogPageData | null> {
     
     let options = new HttpParams();
     
     options = date? options.set('date', date) : options;
     options = startIndex? options.set('startIndex', startIndex) : options;
 
-    return this.http.get<SleepLogPageData>(`${this.baseUrl}`, {
+    return this.http.get<SleepLogPageData | null>(`${this.baseUrl}`, {
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
-      catchError(this.logError<SleepLogPageData>()),
-      map( (resp) => { return {
-        sleepLogs : resp.sleepLogs.map( log => {
-          log.duration = DateToDuration(log);
-          log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
-          log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
-          return log; }),
-        currentPage : resp.currentPage,
-        pageSize: resp.pageSize,
-        totalPages: resp.totalPages,
-        totalRecords: resp.totalRecords
-      }}),
-      );
+      catchError(this.logError()),
+      map( (resp) => { 
+        if( resp != null) {
+          return {
+          sleepLogs : resp.sleepLogs.map( log => {
+            log.duration = DateToDuration(log);
+            log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+            log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+            return log; }),
+          currentPage : resp.currentPage,
+          pageSize: resp.pageSize,
+          totalPages: resp.totalPages,
+          totalRecords: resp.totalRecords}
+        }
+        return null;  
+      }),
+    );
   }
 
-  getLog( id: number) : Observable<SleepLog> {
-    return this.http.get<SleepLog>( `${this.baseUrl}/${id}`, {
+  getLog( id: number) : Observable<SleepLog | null> {
+    return this.http.get<SleepLog | null>( `${this.baseUrl}/${id}`, {
       responseType: 'json',
       withCredentials: true
     }).pipe(
       tap( {next: () => this.log(`Item fetched succesfully`, 'success')}),
-      catchError(this.logError<SleepLog>()),
+      catchError(this.logError()),
       map( log => {
-        log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        return log;
+        if(log != null){
+          log.duration = DateToDuration(log);
+          log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          return log;
+        }
+        return null;
       })
     );
   }
 
-  postLog( log: SleepLog, userdId: string = '') : Observable<SleepLog> {
+  postLog( log: SleepLog, userdId: string = '') : Observable<SleepLog | null> {
     let options = new HttpParams();
     
     options = userdId? options.set('userId', userdId) : options;
 
-    return this.http.post<SleepLog>(`${this.baseUrl}`, log, {
+    return this.http.post<SleepLog | null>(`${this.baseUrl}`, log, {
       responseType: 'json',
       withCredentials: true,
       params: options
     }).pipe(
       tap( {next: () => this.log(`Item created succesfully`, 'success')}),
-      catchError( this.logError<SleepLog>()),
+      catchError( this.logError()),
       map( log => {
-        log.duration = DateToDuration(log);
-        log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
-        return log;
+        if(log != null){
+          log.duration = DateToDuration(log);
+          log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+          return log;
+        }
+        return null;
       })
     );
   }
 
-  putLog( log: SleepLog ) : Observable<SleepLog> {
-    return this.http.put<SleepLog>( `${this.baseUrl}/${log.id}`, log, {
+  putLog( log: SleepLog ) : Observable<SleepLog | null> {
+    return this.http.put<SleepLog | null>( `${this.baseUrl}/${log.id}`, log, {
       responseType: 'json',
       withCredentials: true,
     }).pipe(
       tap( {next: () => this.log(`Item modified succesfully`, 'success')}),
-      catchError( this.logError<SleepLog>())
+      catchError( this.logError()),
     );
   }
 
-  deleteLog( id: number ) : Observable<SleepLog> {
-    return this.http.delete<SleepLog>( `${this.baseUrl}/${id}`, {
+  deleteLog( id: number ) : Observable<boolean> {
+    return this.http.delete<boolean>( `${this.baseUrl}/${id}`, {
+      observe: 'response',
       responseType: 'json',
       withCredentials: true
     }).pipe(
       tap( {next: () => this.log(`Item deleted succesfully`, 'success')}),
-      catchError( this.logError<SleepLog>() )
+      catchError( this.logError() ),
+      map( resp => {
+        if( resp != null && resp.status == 200){
+          return true
+        }
+        return false
+      })
     );
   }
 
@@ -136,10 +156,10 @@ export class SleepLogsService {
     this.notificationService.add( message, type);
   }
 
-  private logError<T>( ){
-    return (error: any): Observable<T> => {
+  private logError(){
+    return (error: any): Observable<null> => {
       this.log(`Unable to complete operation, please try again later. Error code: ${error.status}`, 'error');
-      return scheduled([[] as T], asyncScheduler);
+      return scheduled([null], asyncScheduler);
     };
   }
 }

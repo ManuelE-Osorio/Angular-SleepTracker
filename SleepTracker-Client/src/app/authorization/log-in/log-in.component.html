@@ -1,21 +1,32 @@
+<h2 mat-dialog-title>Log In</h2>
+
 <div *ngIf="!loggedIn else alreadyLoggedIn">
+<mat-dialog-content>
+
     <form [formGroup]="form" (submit)="submitForm()">
-        <div>
-            <label for="name">Email</label>
-            <input type="email" name="email" formControlName="email"/>
-        </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" formControlName="password"/>
-        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email:</mat-label>
+            <input type="email" matInput formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password:</mat-label>
+            <input type="password" matInput formControlName="password">
+        </mat-form-field>
+
         <div *ngIf="logInFailed">
             <label style="color: red">Invalid credentials</label>
         </div>
-        <div>
-            <button [disabled]="!form.valid" type="submit">Sign In</button>
-        </div>
+    
+        <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit">Log In</button>
+    
     </form>    
+
+</mat-dialog-content>
+  
 </div>
+
 
 
 <ng-template #alreadyLoggedIn>

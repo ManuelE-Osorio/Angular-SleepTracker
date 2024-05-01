@@ -1,5 +1,5 @@
 import { NgIf, formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SleepLogForm, SleepLog } from '../../models/sleep-logs';
 import { SleepLogsService } from '../../services/sleep-logs.service';
@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonModule} from '@angular/material/button';
+import {MatDialog, MatDialogRef, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-sleep-log-details-admin',
@@ -17,12 +18,17 @@ import {MatButtonModule} from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogActions, 
+    MatDialogClose, 
+    MatDialogTitle, 
+    MatDialogContent
   ],
   templateUrl: './sleep-log-details-admin.component.html',
   styleUrl: './sleep-log-details-admin.component.css'
 })
-export class SleepLogDetailsAdminComponent {
+export class SleepLogDetailsAdminComponent implements OnInit{
+
   form : FormGroup<SleepLogForm> = new FormGroup<SleepLogForm>({
     id: new FormControl<number>(0, {nonNullable: true, validators: [
       Validators.required, Validators.min(1), Validators.max(2147483647), Validators.pattern("^[0-9]*$")
@@ -33,18 +39,21 @@ export class SleepLogDetailsAdminComponent {
     userName: new FormControl<string | undefined>(' ', {nonNullable: true}),
   });
 
-  @Input() sleepLog: SleepLog = {};
-  @Output() closed = new EventEmitter();
-
   constructor (
-    private sleepLogService : SleepLogsService
+    private sleepLogService : SleepLogsService,
+    @Inject(MAT_DIALOG_DATA) public sleepLog : SleepLog,
+    public dialogRef: MatDialogRef<SleepLogDetailsAdminComponent>
   ) {}
 
   submitForm(){
-
     if(this.form.valid){
       this.sleepLog = Object.assign(this.form.value);
-      this.sleepLogService.putLog(this.sleepLog).subscribe( res => this.sleepLog = res)
+      this.sleepLogService.putLog(this.sleepLog).subscribe( res => {
+        if( res != null){
+          this.sleepLog = res;
+          this.dialogRef.close();
+        }
+      })
     }
   }
 
@@ -52,20 +61,13 @@ export class SleepLogDetailsAdminComponent {
     this.setForm();
   }
 
-  ngOnChanges(): void {
-    this.setForm();
-  }
-
-  update() {
-    if(this.sleepLog != undefined){
-      this.sleepLogService.putLog(this.sleepLog).subscribe()
-    }
-    
-  }
-
   delete() {
     if(this.sleepLog.id != undefined){
-      this.sleepLogService.deleteLog(this.sleepLog.id).subscribe()
+      this.sleepLogService.deleteLog(this.sleepLog.id).subscribe( (resp) => {
+        if(resp == true){
+          this.dialogRef.close();
+        }
+      })
     }
   }
 
@@ -77,9 +79,5 @@ export class SleepLogDetailsAdminComponent {
       this.form.controls.comments.setValue(this.sleepLog.comments)
       this.form.controls.userName?.setValue(this.sleepLog.userName)
     }  
-  }
-
-  close() {
-    this.closed.emit();
   }
 }

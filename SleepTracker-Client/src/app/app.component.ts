@@ -10,6 +10,10 @@ import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClientModule } from "@angular/common/http";
+import { AuthorizationComponent } from './authorization/authorization/authorization.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatGridListModule} from '@angular/material/grid-list';
+
 
 @Component({
   selector: 'app-root',
@@ -25,6 +29,9 @@ import { HttpClientModule } from "@angular/common/http";
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    AuthorizationComponent,
+    MatSidenavModule,
+    MatGridListModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
@@ -40,5 +47,5 @@ export class AppComponent {
       iconRegistry.addSvgIcon('linkedin', sanitizer.bypassSecurityTrustResourceUrl('../assets/svg/linkedin.svg'));
     }
 
-
+    showFiller = false;
 }

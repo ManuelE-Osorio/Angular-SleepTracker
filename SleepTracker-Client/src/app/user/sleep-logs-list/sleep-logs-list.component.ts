@@ -8,60 +8,73 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import {MatProgressBarModule} from '@angular/material/progress-bar'
 import { catchError, map, startWith, switchMap } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-sleep-logs-list',
   standalone: true,
-  imports: [NgIf, NgFor, SleepLogDetailsComponent, SleepLogCreateComponent, MatTableModule, MatPaginatorModule, MatProgressBarModule],
+  imports: [
+    NgFor, 
+    NgIf, 
+    SleepLogCreateComponent, 
+    SleepLogDetailsComponent, 
+    MatTableModule, 
+    MatProgressBarModule, 
+    MatPaginatorModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
   templateUrl: './sleep-logs-list.component.html',
   styleUrl: './sleep-logs-list.component.css'
 })
-export class SleepLogsListComponent implements OnInit, AfterViewInit{
+export class SleepLogsListComponent implements OnInit{
 
-  constructor(
-    private sleepLogService : SleepLogsService
-  ) {}
-
-  index: number = 0;
-  SleepLogs : SleepLog[] = [];
-  SelectedLog? : SleepLog; 
-  CreateLog : boolean = false;
-  columnsToDisplay = ['startDate', 'endDate', 'duration', 'comments'];
+  columnsToDisplay = ['startDate', 'endDate', 'duration', 'comments', "details"];
   dataSource = new MatTableDataSource<SleepLog>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   isLoading = true;
-  totalData: number = 0;
+
+  constructor(
+    private sleepLogService : SleepLogsService,
+    public logDialog: MatDialog
+  ) {}
+
 
   ngOnInit(): void {
-   
+   this.getLogs(0);
   }
 
   getLogs( startIndex: number, date?: string) {
     this.isLoading = true;
     this.sleepLogService.getLogs( startIndex, date).subscribe( resp => {
-      this.isLoading = false;
-      this.dataSource.data = resp.sleepLogs;
-      this.paginator.length = resp.totalRecords
-      });
-  }
-
-  setSleepLog(log: SleepLog) {
-    this.SelectedLog = log;
-  }
-
-  closeCreate(event: any){
-    this.CreateLog = false;
-  }
-
-  closeDetails(event: any){
-    this.SelectedLog = undefined;
-  }
-
-  ngAfterViewInit() {
-    this.getLogs(0);
+      if(resp != null){
+        this.isLoading = false;
+        this.dataSource.data = resp.sleepLogs;
+        this.paginator.length = resp.totalRecords;
+      }
+    });
   }
 
   onChangePage(event: PageEvent) {
     this.getLogs(event.pageIndex*event.pageSize); 
+  }
+
+  openDetails(log: SleepLog): void {
+    this.logDialog.open(SleepLogDetailsComponent, {
+      width: '400px',
+      enterAnimationDuration: '400',
+      exitAnimationDuration: '400',
+      data: log
+    }).afterClosed().subscribe(() => this.getLogs(this.paginator.pageIndex*this.paginator.pageSize));
+  }
+
+  openCreate(): void {
+    this.logDialog.open(SleepLogCreateComponent, {
+      width: '400px',
+      enterAnimationDuration: '400',
+      exitAnimationDuration: '400',
+    }).afterClosed().subscribe(() => this.getLogs(this.paginator.pageIndex*this.paginator.pageSize));
   }
 }

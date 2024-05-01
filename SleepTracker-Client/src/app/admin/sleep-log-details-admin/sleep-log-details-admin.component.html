@@ -1,33 +1,39 @@
-<form *ngIf="sleepLog" [formGroup]="form" (ngSubmit)="submitForm()">
+<h2 mat-dialog-title> Log Details</h2>
 
-
+<mat-dialog-content>
   
+  <form *ngIf="sleepLog" [formGroup]="form" (ngSubmit)="submitForm()">
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Start Date:</mat-label>
-    <input type="datetime-local" matInput formControlName="startDate">
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Start Date:</mat-label>
+      <input type="datetime-local" matInput formControlName="startDate">
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>End Date:</mat-label>
-    <input type="datetime-local" matInput formControlName="endDate">
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>End Date:</mat-label>
+      <input type="datetime-local" matInput formControlName="endDate">
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Comments:</mat-label>
-    <input matInput formControlName="comments">
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Comments:</mat-label>
+      <input matInput formControlName="comments">
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>User Name:</mat-label>
-    <input matInput formControlName="userName">
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>User Name:</mat-label>
+      <input matInput formControlName="userName">
+    </mat-form-field>
+    
+    <mat-dialog-actions>
+      <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
+      <button mat-flat-button color="warn" type="button" (click)="delete()">Delete</button>
+      <button mat-flat-button color="primary" type="submit"> Update</button>
+    </mat-dialog-actions>
 
-  <div class="example-button-row">
-    <button mat-flat-button color="warn" (click)="close()">Cancel</button>
-    <button mat-flat-button color="warn" (click)="delete()">Delete</button>
-    <button mat-flat-button color="primary" type="submit"> Update</button>
-  </div>
+
+  </form> 
+</mat-dialog-content>
+
+
     
   
-  </form>

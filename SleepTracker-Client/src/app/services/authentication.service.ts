@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Account } from "../models/account";
+import { Account, AccountDto } from "../models/account";
 import { BehaviorSubject, Observable, Subject, asyncScheduler, catchError, map, of, scheduled, tap } from "rxjs";
 import { NotificationsService } from "./notifications.service";
 
@@ -64,9 +64,18 @@ export class AuthenticationService {
   //       return res.ok;
   //     }));
   // }
+  public getInfo() : Observable<AccountDto | null> {
+    return this.http.get<AccountDto | null>('/manage/info', {
+      withCredentials: true,
+      responseType: 'json'
+    }).pipe(
+      tap( {next: () => this.log('Fetching user data', 'success')}),
+      catchError( () => scheduled([null], asyncScheduler)),
+    )
+  }
 
-  public isSignedIn() : Observable<boolean> {
-    return this.http.get<Account | null >('/manage/info', {
+  public isLoggedIn() : Observable<boolean> {
+    return this.http.get<AccountDto | null >('/manage/info', {
       withCredentials: true,
       responseType: 'json'
     }).pipe(

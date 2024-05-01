@@ -1,8 +1,8 @@
 import { FormControl } from "@angular/forms";
 
 export interface AccountDto{
-    id: string;
-    userName: string;
+    email: string;
+    isEmailConfirmed: boolean;
 }
 
 export interface Account{

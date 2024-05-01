@@ -5,11 +5,26 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { Router } from "@angular/router";
 import { AuthenticationService } from "../../services/authentication.service";
 import { Account, AccountForm } from '../../models/account';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [NgIf,ReactiveFormsModule],
+  imports: [
+    NgIf,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatButtonModule,
+    MatDialogActions, 
+    MatDialogClose, 
+    MatDialogTitle, 
+    MatDialogContent
+  ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css'
 })
@@ -28,16 +43,18 @@ export class LogInComponent implements OnInit{
   logInFailed: boolean = false;
 
   constructor(
-    private authenticationService: AuthenticationService,    
+    private authenticationService: AuthenticationService,  
+    public dialogRef: MatDialogRef<LogInComponent>  
   ){}
 
   logIn(account: Account){
     this.authenticationService.logIn(account).subscribe( resp => {
       if( resp.status == 200){
-        console.log(resp);
         this.loggedIn = true;
+        this.dialogRef.close();
       }
       else{
+        console.log("failes");
         this.logInFailed = true;
       }
     })
@@ -51,12 +68,18 @@ export class LogInComponent implements OnInit{
     }
   }
 
-  // check() {
-  //   this.authenticationService.
-  // }
+  logOut() {
+    this.authenticationService.logOut().subscribe( resp => {
+      console.log(resp)
+      if( resp.status == 200){
+        this.loggedIn = false;
+        this.logInFailed = false;
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.authenticationService.isSignedIn()
+    this.authenticationService.isLoggedIn()
       .subscribe( resp => this.loggedIn = resp)
   }
 }

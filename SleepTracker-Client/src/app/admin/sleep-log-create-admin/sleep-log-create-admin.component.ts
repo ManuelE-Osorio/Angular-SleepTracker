@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule, MatDialog, MatDialogRef, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-sleep-log-create-admin',
@@ -15,14 +16,17 @@ import {MatButtonModule} from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogActions, 
+    MatDialogClose, 
+    MatDialogTitle, 
+    MatDialogContent
   ],
   templateUrl: './sleep-log-create-admin.component.html',
   styleUrl: './sleep-log-create-admin.component.css',
   
 })
 export class SleepLogCreateAdminComponent {
-  @Output() closed = new EventEmitter();
 
   sleepLog: SleepLog = {};
   
@@ -35,16 +39,17 @@ export class SleepLogCreateAdminComponent {
 
   constructor(
     private sleeplogService : SleepLogsService,
+    public dialogRef: MatDialogRef<SleepLogCreateAdminComponent>
   ) {}
 
   submitForm(){
     if(this.form.valid){
       this.sleepLog = Object.assign(this.form.value);
-      this.sleeplogService.postLog(this.sleepLog, this.sleepLog.userName).subscribe( () => this.close())
-    } 
-  }
-
-  close() {
-    this.closed.emit();
+      this.sleeplogService.postLog(this.sleepLog, this.sleepLog.userName).subscribe( (resp) => {
+        if(resp != null){
+          this.dialogRef.close()
+        }
+      }); 
+    }
   }
 }
