@@ -20,7 +20,7 @@
                         </mat-form-field>
 
                         <div *ngIf="logInFailed">
-                            <label style="color: red">Invalid credentials</label>
+                            <mat-error style="color: red">Invalid credentials</mat-error>
                         </div>
                     
                         <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit">Log In</button>

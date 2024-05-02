@@ -46,6 +46,7 @@ export class LogInComponent implements OnInit{
 
   loggedIn: boolean = false;
   logInFailed: boolean = false;
+  serverFailed: boolean = false;
 
   constructor(
     private router: Router,
