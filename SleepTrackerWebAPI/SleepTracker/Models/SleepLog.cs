@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace SleepTracker.Models;
 
-public class SleepLog
+public class SleepLog : IValidatableObject
 {
     public int? Id { get; set; }
 
@@ -15,4 +16,12 @@ public class SleepLog
     public DateTime? EndDate { get; set; }
     public string? Comments { get; set; }
     public IdentityUser? User {get; set;}
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (EndDate < StartDate)
+        {
+            yield return new ValidationResult("EndDate must be greater than StartDate");
+        }
+    }
 }

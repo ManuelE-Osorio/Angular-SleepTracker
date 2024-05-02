@@ -1,7 +1,7 @@
 import { NgIf, formatDate } from '@angular/common';
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { SleepLogForm, SleepLog } from '../../models/sleep-logs';
+import { SleepLogForm, SleepLog, forbiddenDateValidator } from '../../models/sleep-logs';
 import { SleepLogsService } from '../../services/sleep-logs.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -33,11 +33,11 @@ export class SleepLogDetailsAdminComponent implements OnInit{
     id: new FormControl<number>(0, {nonNullable: true, validators: [
       Validators.required, Validators.min(1), Validators.max(2147483647), Validators.pattern("^[0-9]*$")
     ]} ),
-    startDate: new FormControl<string>(new Date().toLocaleDateString(), {nonNullable: true, validators: Validators.required}),
-    endDate: new FormControl<string>(new Date().toLocaleDateString(), {nonNullable: true, validators: Validators.required}),
+    startDate: new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
+    endDate: new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
     comments: new FormControl<string | undefined>('', {nonNullable: true}),
     userName: new FormControl<string | undefined>(' ', {nonNullable: true}),
-  });
+  }, {validators: forbiddenDateValidator()} );
 
   constructor (
     private sleepLogService : SleepLogsService,

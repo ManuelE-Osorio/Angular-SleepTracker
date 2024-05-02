@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { SleepLog, SleepLogForm } from '../../models/sleep-logs';
+import { SleepLog, SleepLogForm, forbiddenDateValidator } from '../../models/sleep-logs';
 import { SleepLogsService } from '../../services/sleep-logs.service';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-sleep-log-create',
   standalone: true,
   imports: [
+    NgIf,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -35,7 +36,7 @@ export class SleepLogCreateComponent{
     startDate: new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
     endDate: new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
     comments: new FormControl<string | undefined>(' ', {nonNullable: true})
-  });
+  }, {validators: forbiddenDateValidator()} );
 
   constructor(
     private sleeplogService : SleepLogsService,

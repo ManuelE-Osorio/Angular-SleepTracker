@@ -24,9 +24,13 @@
       <input matInput formControlName="userName">
     </mat-form-field>
 
+    <mat-error *ngIf="form.errors?.['invalidDate'] && (form.touched || form.dirty)">
+      End Date must be after Start Date
+    </mat-error>
+
     <mat-dialog-actions>
       <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" type="submit">Create</button>
+      <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit">Create</button>
     </mat-dialog-actions>
   </form>
 

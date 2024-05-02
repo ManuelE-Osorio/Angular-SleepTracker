@@ -1,4 +1,4 @@
-import { FormControl } from "@angular/forms";
+import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 export interface SleepLog {
     id?: number;
@@ -38,4 +38,13 @@ export function DateToDuration(log: SleepLog) : string {
     minutes = (Math.floor(milliseconds/(60 * 1000))-hours*60);
 
     return `${hours.toString().padStart(2,"0")}:${minutes.toString().padStart(2,"0")}`;
+}
+
+export function forbiddenDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        const startDate = new Date(control.get('startDate')?.value)
+        const endDate = new Date(control.get('endDate')?.value)
+        const result = endDate < startDate
+        return result ? { invalidDate: { value: control.value } } : null;
+    };
 }

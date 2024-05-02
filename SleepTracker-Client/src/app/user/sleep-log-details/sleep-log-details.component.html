@@ -18,11 +18,15 @@
       <mat-label>Comments:</mat-label>
       <input matInput formControlName="comments">
     </mat-form-field>
+
+    <mat-error *ngIf="form.errors?.['invalidDate'] && (form.touched || form.dirty)">
+      End Date must be after Start Date
+    </mat-error>
     
     <mat-dialog-actions>
       <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
       <button mat-flat-button color="warn" (click)="delete()" type="button" >Delete</button>
-      <button mat-flat-button color="primary" type="submit"> Update</button>
+      <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit"> Update</button>
     </mat-dialog-actions>
 
 

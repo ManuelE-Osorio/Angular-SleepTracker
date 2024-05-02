@@ -1,7 +1,7 @@
 
 <main class="main">
 
-  <mat-drawer-container class="example-container" [hasBackdrop]="true">
+  <header>
     <mat-toolbar color="primary">
       <a class="bar-item" target="_blank" href="https://www.thecsharpacademy.com">
         <img src="assets/logo.png" alt="TheCSharpAcademy" width="60" height="60">
@@ -22,20 +22,40 @@
       </a>
 
     </mat-toolbar>
-  
-    
-    <mat-drawer #drawer class="example-sidenav" mode="side">
-      <button routerLink="user" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
-        User
-      </button>
-      <button *ngIf="isAdmin" routerLink="admin" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
-        Admin
-      </button>
-    </mat-drawer>
-    
+  </header>
 
-    <router-outlet></router-outlet>
-    
-  </mat-drawer-container>
+  <body>
+
+    <mat-sidenav-container class="example-container" [hasBackdrop]="true">
+
+      <mat-sidenav-content>
+
+      
+        <router-outlet></router-outlet>
+
+      </mat-sidenav-content>
+
+      <mat-sidenav #drawer class="example-sidenav" mode="side">
+        <button routerLink="user" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
+          User
+        </button>
+        <button *ngIf="isAdmin" routerLink="admin" (click)="drawer.close()" mat-flat-button color="primary" class="full-width">
+          Admin
+        </button>
+      </mat-sidenav>
+
+    </mat-sidenav-container>
+
+  </body>
+
+  <footer>
+    <mat-toolbar class="footer">
+      <p>
+        Created by <a href="https://github.com/ManuelE-Osorio">ManuelE-Osorio</a> as a proyect of <a href="https://www.thecsharpacademy.com">The CSharp Academy</a>
+      </p>
+
+    </mat-toolbar>
+  </footer>
+
 </main>
 
