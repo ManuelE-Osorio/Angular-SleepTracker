@@ -152,6 +152,32 @@ export class SleepLogsService {
     );
   }
 
+  getLogsSample() : Observable<SleepLogPageData | null> {
+    
+    return this.http.get<SleepLogPageData | null>(`${this.baseUrl}/sample`, {
+      responseType: 'json',
+      withCredentials: true,
+    }).pipe(
+      tap( {next: () => this.log(`Items fetched succesfully`, `success`)}),
+      catchError(this.logError()),
+      map( (resp) => { 
+        if( resp != null) {
+          return {
+          sleepLogs : resp.sleepLogs.map( log => {
+            log.duration = DateToDuration(log);
+            log.startDate = formatDate(new Date(log.startDate!), 'yyyy-MM-ddTHH:mm', 'en');
+            log.endDate = formatDate(new Date(log.endDate!), 'yyyy-MM-ddTHH:mm', 'en');
+            return log; }),
+          currentPage : resp.currentPage,
+          pageSize: resp.pageSize,
+          totalPages: resp.totalPages,
+          totalRecords: resp.totalRecords}
+        }
+        return null;  
+      }),
+    );
+  }
+
   private log(message: string, type: string) {
     this.notificationService.add( message, type);
   }

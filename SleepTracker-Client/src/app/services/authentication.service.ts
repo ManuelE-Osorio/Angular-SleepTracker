@@ -17,6 +17,7 @@ export class AuthenticationService {
   private _authStateChanged: Subject<boolean> = new BehaviorSubject<boolean>(false);
   private _accountInfo: Subject<AccountDto | null> = new BehaviorSubject<AccountDto | null>(null);
   private _isAdmin: Subject<boolean> = new BehaviorSubject<boolean>(false);
+  private _isUser: Subject<boolean> = new BehaviorSubject<boolean>(false);
 
   public onStateChanged() {
     return this._authStateChanged.asObservable();
@@ -28,6 +29,10 @@ export class AuthenticationService {
 
   public isAdmin2() {
     return this._isAdmin.asObservable();
+  }
+
+  public isUser() {
+    return this._isUser.asObservable();
   }
 
   public logIn(account: Account) : Observable<any> {
@@ -42,6 +47,20 @@ export class AuthenticationService {
           this.getInfo().subscribe();
         }
         return res
+    }));
+  }
+
+  public register(account: Account) : Observable<boolean> {
+    return this.http.post<boolean>(`/register`, account, {
+      observe: 'response'
+    }).pipe(
+      tap( {next: () => this.log(`Account creation succesful`, `success`)}),
+      catchError( () => scheduled([null], asyncScheduler)),
+      map( (res) => {
+        if( res!= null && res.status == 200){
+         return true;
+        }
+        return false;
     }));
   }
 
@@ -96,7 +115,7 @@ export class AuthenticationService {
   }
 
   public getAdmin() : Observable<boolean> {
-    return this.http.get<boolean>('/role', {
+    return this.http.get<boolean>('/adminrole', {
       withCredentials: true,
       responseType: 'json'
     }).pipe(
@@ -104,6 +123,20 @@ export class AuthenticationService {
       catchError( () => scheduled([false], asyncScheduler)),
       map( (res) => {     
         this._isAdmin.next(res);
+        return res
+      })      
+    )
+  }
+
+  public getUser() : Observable<boolean> {
+    return this.http.get<boolean>('/userrole', {
+      withCredentials: true,
+      responseType: 'json'
+    }).pipe(
+      tap( {next: () => this.log(`User Request`, `success`)}),
+      catchError( () => scheduled([false], asyncScheduler)),
+      map( (res) => {     
+        this._isUser.next(res);
         return res
       })      
     )

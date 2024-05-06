@@ -9,7 +9,8 @@ const TARGET = {
     "/login": TARGET,
     "/logout": TARGET,
     "/register": TARGET,
-    "/role" : TARGET
+    "/adminrole" : TARGET,
+    "/userrole" : TARGET
   };
   
   module.exports = PROXY_CONFIG;

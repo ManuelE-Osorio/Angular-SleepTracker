@@ -31,10 +31,16 @@ public class SleepTrackerController( SignInManager<IdentityUser> signInManager) 
     }
 
     [HttpGet]
-    [Route("/role")]
+    [Route("/adminrole")]
     public IResult UserIsAdmin ()
     {
         return TypedResults.Ok( User.IsInRole("Admin"));
     }
 
+    [HttpGet]
+    [Route("/userrole")]
+    public IResult IsUser ()
+    {
+        return TypedResults.Ok( User.IsInRole("User") || User.IsInRole("Admin"));
+    }
 }

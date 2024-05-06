@@ -49,8 +49,11 @@ export class AppComponent implements OnDestroy{
   title = "SleepTracker-Client"
   isLoggedIn : boolean = false;
   isAdmin : boolean = false;
+  isUser : boolean = false;
   adminSubscription : Subscription;
   loggedInSubscription : Subscription;
+  userSubscription : Subscription;
+  
 
   constructor(
     iconRegistry: MatIconRegistry, 
@@ -62,8 +65,10 @@ export class AppComponent implements OnDestroy{
     iconRegistry.addSvgIcon('linkedin', sanitizer.bypassSecurityTrustResourceUrl('../assets/svg/linkedin.svg'));
     this.authService.isLoggedIn().subscribe();
     this.authService.getAdmin().subscribe();
+    this.authService.getUser().subscribe();
     this.loggedInSubscription = this.authService.onStateChanged().subscribe( resp => this.isLoggedIn = resp);
     this.adminSubscription = this.authService.isAdmin2().subscribe( resp => this.isAdmin = resp);
+    this.userSubscription = this.authService.isUser().subscribe( resp => this.isUser = resp);
   }
 
   ngOnDestroy(): void {

@@ -10,6 +10,9 @@ import { UserComponent } from './user/user/user.component';
 import { SleepLogsListComponent } from './user/sleep-logs-list/sleep-logs-list.component';
 import { SleepLogCreateComponent } from './user/sleep-log-create/sleep-log-create.component';
 import { SleepLogDetailsComponent } from './user/sleep-log-details/sleep-log-details.component';
+import { guestGuard } from './guards/guest.guard';
+import { GuestComponent } from './guest/guest/guest.component';
+import { CreateAccountComponent } from './authorization/create-account/create-account.component';
 
 export const routes: Routes = [
     
@@ -21,9 +24,14 @@ export const routes: Routes = [
     },
 
     {path: 'signin', component: LogInComponent},
+    {path: 'create', component: CreateAccountComponent},
 
     { path: 'user', component: UserComponent,
     canActivate: [userGuard]
+    },
+
+    { path: 'guest', component: GuestComponent,
+    canActivate: [guestGuard]
     },
     
 ];

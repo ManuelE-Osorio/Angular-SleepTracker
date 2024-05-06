@@ -8,13 +8,14 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Generic;
 
 namespace SleepTracker.Controllers;
 
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/sleeplogs")]
-[Authorize]
 public class SleepLogsController(SleepTrackerContext context, UserManager<IdentityUser> userManager) : Controller
 {
     private readonly SleepTrackerContext _context = context;
@@ -53,6 +54,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> GetLogs(string? date, int? startIndex, int? pageSize) 
     {
         if (_context.Users == null)
@@ -87,7 +89,8 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
     }
 
     [HttpGet("{id}")]
-    public async Task<IResult> GetLog(int id)   //refactor to allow admin get any user
+    [Authorize(Roles = "Admin, User")]
+    public async Task<IResult> GetLog(int id)
     {
         if (_context.Users == null)
             return TypedResults.Problem("Entity set 'Users'  is null.");
@@ -110,6 +113,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
 
     [HttpPost]
     [Consumes("application/json")]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> CreateLog( [FromBody] SleepLog log, string? userId)
     {
         if ( !ModelState.IsValid)
@@ -141,6 +145,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
 
     [HttpPut("{id}")]
     [Consumes("application/json")]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> UpdateLog( int id, [FromBody] SleepLog log )
     {
         if(!ModelState.IsValid || id != log.Id)
@@ -174,6 +179,7 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
 
     [HttpDelete("{id}")]
     [Consumes("application/json")]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> DeleteLog( int id) 
     {
         var log = await _context.SleepLogs.FindAsync( id );
@@ -204,5 +210,51 @@ public class SleepLogsController(SleepTrackerContext context, UserManager<Identi
         }
         else
             return TypedResults.Unauthorized();
+    }
+
+    [HttpGet]
+    [Route("sample")]
+    public IResult GetSampleData()
+    {
+        return TypedResults.Ok(new SleepLogDtoPageData(
+            [
+                new SleepLogDto { 
+                    Id = 0,
+                    StartDate = new DateTime(2024, 4, 22, 22, 0, 0),
+                    EndDate = new DateTime( 2024, 4, 23, 8, 30, 0),
+                    Comments = "Well rested"
+                },
+                new SleepLogDto { 
+                    Id = 1,
+                    StartDate = new DateTime(2024, 4, 21, 23, 15, 0),
+                    EndDate = new DateTime( 2024, 4, 22, 7, 22, 0),
+                    Comments = "Nightmares"
+                },
+                new SleepLogDto { 
+                    Id = 2,
+                    StartDate = new DateTime(2024, 4, 20, 23, 30, 0),
+                    EndDate = new DateTime( 2024, 4, 21, 8, 25, 0),
+                    Comments = "Bad Sleep"
+                },
+                new SleepLogDto { 
+                    Id = 3,
+                    StartDate = new DateTime(2024, 4, 19, 20, 40, 0),
+                    EndDate = new DateTime( 2024, 4, 20, 6, 50, 0),
+                    Comments = "Well rested"
+                },
+                new SleepLogDto { 
+                    Id = 4,
+                    StartDate = new DateTime(2024, 4, 18, 23, 40, 0),
+                    EndDate = new DateTime( 2024, 4, 19, 7, 15, 0),
+                    Comments = "Well rested"
+                }
+            ]
+        )
+        {
+            TotalRecords = 5,
+            CurrentPage =  0,
+            PageSize = 5,
+            TotalPages = 1
+        });
     }
 }
